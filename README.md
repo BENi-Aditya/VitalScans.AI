@@ -4,11 +4,6 @@
 
 <p style="font-size: 1.2em;">VitalScans.AI revolutionizes the way we diagnose lung diseases like pneumonia, tuberculosis (TB), and more, along with MRI scans, by offering AI-powered image analysis at home. By enabling early diagnosis and providing detailed results that can be shared with doctors, this project bridges the gap between healthcare accessibility and effective medical care, reducing the need for multiple radiologist visits and saving precious time.</p>
 
-<div align="center">
-  <img src="image-placeholder.png" alt="VitalScans.AI Interface" style="max-width: 100%; height: auto;"/>
-</div>
-
-<br>
 
 <h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Technologies Used</h2>
 <ul style="font-size: 1.1em; text-align: center;">
