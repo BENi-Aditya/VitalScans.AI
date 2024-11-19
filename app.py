@@ -15,8 +15,8 @@ os.makedirs(RESULT_FOLDER, exist_ok=True)
 
 # Initialize RoboFlow Client
 CLIENT = InferenceHTTPClient(
-    api_url="https://detect.roboflow.com",
-    api_key="hjCFUfsJBCSxi8KzP8yC"
+    api_url=os.getenv("ROBOFLOW_API_URL"),
+    api_key=os.getenv("ROBOFLOW_API_KEY")
 )
 MODEL_ID = "pneumonia-itjkr/2"  # Update this with your exact model version
 
