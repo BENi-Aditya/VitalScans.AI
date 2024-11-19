@@ -1,7 +1,10 @@
-from flask import Flask, request, render_template, url_for
+from flask import Flask, request, render_template, url_for, jsonify
 from PIL import Image, ImageDraw, ImageFont
 import os
 from inference_sdk import InferenceHTTPClient
+from datetime import datetime
+from chatbot import chatbot
+
 
 # Initialize Flask App
 app = Flask(__name__)
@@ -73,6 +76,17 @@ def draw_predictions(image_path, predictions):
     result_image_path = os.path.join(RESULT_FOLDER, os.path.basename(image_path))
     image.save(result_image_path)
     return result_image_path
+
+@app.route('/ask_chatgpt', methods=['POST'])
+def ask_chatgpt():
+    question = request.form['question']
+    prediction = request.form['prediction']
+    confidence = request.form['confidence']
+    
+    context = f"The user's chest X-ray scan has been analyzed, and the prediction is {prediction} with a confidence of {confidence}%. "
+    
+    response = chatbot.get_response(context + question)
+    return jsonify({'answer': response})
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pneumonia Detection Results</title>
+    <title>VitalScans.AI - Results</title>
     <style>
         body, html {
             margin: 0;
@@ -11,80 +11,458 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
             color: #ffffff;
-            height: 100%;
-            background: linear-gradient(135deg, #1c2a4a 0%, #0a1128 100%);
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            padding: 20px;
+            background: linear-gradient(135deg, #1a2a4a 0%, #0a1128 100%) fixed;
         }
-        .content-box {
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1, h2, h3 {
+            margin: 0;
+            color: #ffffff;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-wrapper {
+            display: flex;
+            gap: 2.5rem;
+            margin-bottom: 2.5rem;
+            min-height: 700px;
+        }
+
+        .result-container, .chat-container {
+            flex: 1;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            height: 700px;
         }
-        h1, h2 {
-            font-weight: 600;
-            color: #ffffff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+
+        .result-container {
+            align-items: center;
         }
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 30px;
+
+        .image-wrapper {
+            width: 395px;
+            height: 475px;
+            position: relative;
+            margin-bottom: 1.5rem;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
-        h2 {
-            font-size: 1.8em;
-            margin-top: 20px;
-        }
+
         .result-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        .back-link {
-            display: inline-block;
-            margin-top: 30px;
-            background: linear-gradient(45deg, #3498db, #2980b9);
+
+        #annotationCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .prediction-box {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .prediction-text {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .normal-text {
+            color: #2ecc71;
+        }
+
+        .pneumonia-text {
+            color: #e74c3c;
+        }
+
+        .chat-box {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 1rem;
+            height: 80px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0 1.5rem;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .chat-input input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .send-button {
+            padding: 0 2rem;
+            border: none;
+            border-radius: 15px;
+            background: #3498db;
             color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .send-button:hover {
+            background: #2980b9;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background: rgba(52, 152, 219, 0.2);
+            margin-left: auto;
+        }
+
+        .bot-message {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .analyze-button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 2.5rem;
+            background: #3498db;
+            color: white;
+            text-align: center;
             text-decoration: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            font-size: 1.2rem;
+            transition: background-color 0.3s;
         }
-        .back-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+
+        .analyze-button:hover {
+            background: #2980b9;
         }
-        .back-link:active {
-            transform: translateY(1px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+
+        .question-categories {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .category {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .question-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            padding: 1rem;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .question-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+
+            .result-container, .chat-container {
+                width: 100%;
+                height: auto;
+                min-height: 500px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="content-box">
-            <h1>Pneumonia Detection Results</h1>
+        <h1>VitalScans.AI Results</h1>
+        <div class="content-wrapper">
             <div class="result-container">
                 <h2>Annotated Image</h2>
-                <img src="{{ result_image }}" alt="Annotated Image" class="result-image">
+                <div class="image-wrapper">
+                    <img src="{{ result_image }}" alt="Annotated Image" class="result-image" id="annotatedImage">
+                    <canvas id="annotationCanvas"></canvas>
+                </div>
+                <div class="prediction-box">
+                    <p class="prediction-text">
+                        Prediction: <span id="predictionText" class="{{ 'normal-text' if predictions[0]['class'] == 'Normal' else 'pneumonia-text' }}">
+                            {{ predictions[0]['class'] }}
+                        </span>
+                        (Confidence: {{ (predictions[0]['confidence'] * 100)|round(2) }}%)
+                    </p>
+                </div>
             </div>
-            <a href="/" class="back-link">Analyze Another Image</a>
+            <div class="chat-container">
+                <h2>Medical Assistant Chat</h2>
+                <div class="chat-box" id="chat-box">
+                    <div class="message bot-message">
+                        Hello! I'm your medical assistant. I can provide information about your scan results and answer questions about pneumonia and other lung issues. How can I help you today?
+                    </div>
+                </div>
+                <form id="chat-form" class="chat-input">
+                    <input type="text" id="user-input" placeholder="Type your question..." required>
+                    <button type="submit" class="send-button">Send</button>
+                </form>
+            </div>
+        </div>
+        <a href="/" class="analyze-button">Analyze Another Image</a>
+        
+        <div class="question-categories">
+            <h2>Ask our Medical Assistant</h2>
+            <p>Click on a question to ask:</p>
+            
+            <div class="category">
+                <h3>Understanding Pneumonia</h3>
+                <div class="question-list">
+                    <button class="question-button">What is pneumonia?</button>
+                    <button class="question-button">What are the common symptoms of pneumonia?</button>
+                    <button class="question-button">What causes pneumonia?</button>
+                    <button class="question-button">Is pneumonia contagious?</button>
+                    <button class="question-button">How is pneumonia diagnosed?</button>
+                </div>
+            </div>
+            
+            <div class="category">
+                <h3>Prevention and Risk Factors</h3>
+                <div class="question-list">
+                    <button class="question-button">How can I prevent pneumonia?</button>
+                    <button class="question-button">Who is at higher risk of developing pneumonia?</button>
+                    <button class="question-button">Are there vaccines for pneumonia?</button>
+                    <button class="question-button">Can pneumonia occur more than once?</button>
+                    <button class="question-button">What lifestyle changes can reduce the risk of lung diseases?</button>
+                </div>
+            </div>
+            
+            <div class="category">
+                <h3>Treatment and Recovery</h3>
+                <div class="question-list">
+                    <button class="question-button">How is pneumonia treated?</button>
+                    <button class="question-button">How long does it take to recover from pneumonia?</button>
+                    <button class="question-button">Can pneumonia be treated at home?</button>
+                    <button class="question-button">What should I eat or avoid while recovering from pneumonia?</button>
+                    <button class="question-button">Are there long-term effects of pneumonia?</button>
+                </div>
+            </div>
+            
+            <div class="category">
+                <h3>Other Lung Diseases</h3>
+                <div class="question-list">
+                    <button class="question-button">What are common lung diseases besides pneumonia?</button>
+                    <button class="question-button">What is tuberculosis (TB), and how is it different from pneumonia?</button>
+                    <button class="question-button">What is COPD, and who is at risk?</button>
+                    <button class="question-button">What are the early symptoms of lung cancer?</button>
+                    <button class="question-button">How can I tell the difference between a common cold, bronchitis, and pneumonia?</button>
+                </div>
+            </div>
+            
+            <div class="category">
+                <h3>When to Seek Help</h3>
+                <div class="question-list">
+                    <button class="question-button">When should I see a doctor if I suspect pneumonia?</button>
+                    <button class="question-button">What does shortness of breath indicate?</button>
+                    <button class="question-button">How can I tell if a cough is serious?</button>
+                    <button class="question-button">What are the warning signs of a lung infection?</button>
+                    <button class="question-button">What should I do if a child or elderly person shows symptoms of pneumonia?</button>
+                </div>
+            </div>
+            
+            <div class="category">
+                <h3>General Lung Health</h3>
+                <div class="question-list">
+                    <button class="question-button">How can I improve my lung health?</button>
+                    <button class="question-button">Does air pollution affect the lungs?</button>
+                    <button class="question-button">What exercises are good for improving lung capacity?</button>
+                    <button class="question-button">Does smoking always lead to lung disease?</button>
+                    <button class="question-button">How can I protect my lungs during a flu season or pandemic?</button>
+                </div>
+            </div>
+            
+            <div class="category">
+                <h3>FAQs Related to Scans and Imaging</h3>
+                <div class="question-list">
+                    <button class="question-button">What does a lung X-ray show?</button>
+                    <button class="question-button">How accurate are scans for detecting lung diseases?</button>
+                    <button class="question-button">What is the difference between an X-ray, CT scan, and MRI for lung diagnosis?</button>
+                    <button class="question-button">Can lung scans detect issues before symptoms appear?</button>
+                    <button class="question-button">Do I need a doctor's referral for a lung scan?</button>
+                </div>
+            </div>
+            
+            <div class="category">
+                <h3>Common Myths and Misconceptions</h3>
+                <div class="question-list">
+                    <button class="question-button">Is pneumonia just a bad cold?</button>
+                    <button class="question-button">Can young and healthy people get lung diseases?</button>
+                    <button class="question-button">Does pneumonia only occur in cold weather?</button>
+                    <button class="question-button">Do antibiotics cure all types of pneumonia?</button>
+                    <button class="question-button">Is pneumonia always serious?</button>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#annotatedImage').attr('src', '{{ result_image }}?' + new Date().getTime());
+            const prediction = "{{ predictions[0]['class'] }}";
+            const confidence = "{{ (predictions[0]['confidence'] * 100)|round(2) }}";
+
+            function resizeImage(img, targetWidth, targetHeight) {
+                const canvas = document.createElement('canvas');
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+                return canvas.toDataURL();
+            }
+
+            function drawAnnotation() {
+                const image = document.getElementById('annotatedImage');
+                const canvas = document.getElementById('annotationCanvas');
+                const ctx = canvas.getContext('2d');
+
+                // Set canvas size to match the image wrapper
+                canvas.width = 395;
+                canvas.height = 475;
+
+                // Clear previous annotations
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Resize the image
+                const resizedImageSrc = resizeImage(image, 395, 475);
+                const resizedImage = new Image();
+                resizedImage.onload = function() {
+                    // Clear the canvas again before drawing the new image and annotation
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // Draw the resized image on the canvas
+                    ctx.drawImage(resizedImage, 0, 0, 395, 475);
+
+                    // Draw bounding box and label for the first prediction only
+                    const pred = {{ predictions[0]|tojson }};
+                    const boxWidth = pred.width * 395;
+                    const boxHeight = pred.height * 475;
+                    const boxX = (pred.x - pred.width / 2) * 395;
+                    const boxY = (pred.y - pred.height / 2) * 475;
+
+                    ctx.strokeStyle = pred.class === 'Normal' ? '#2ecc71' : '#e74c3c';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
+
+                    // Add label background
+                    const labelText = `${pred.class}: ${(pred.confidence * 100).toFixed(2)}%`;
+                    ctx.font = 'bold 16px Arial';
+                    const textWidth = ctx.measureText(labelText).width;
+                    
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                    ctx.fillRect(boxX, boxY - 30, textWidth + 20, 30);
+
+                    // Add label text
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(labelText, boxX + 10, boxY - 10);
+                };
+                resizedImage.src = resizedImageSrc;
+            }
+
+            // Draw annotation when image is loaded
+            $('#annotatedImage').on('load', drawAnnotation);
+
+            $('#chat-form').on('submit', function(e) {
+                e.preventDefault();
+                const userInput = $('#user-input').val();
+                if (!userInput.trim()) return;
+                
+                $('#chat-box').append('<div class="message user-message">' + userInput + '</div>');
+                $('#user-input').val('');
+                $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+
+                $.post('/ask_chatgpt', { 
+                    question: userInput,
+                    prediction: prediction,
+                    confidence: confidence
+                })
+                    .done(function(response) {
+                        $('#chat-box').append('<div class="message bot-message">' + response.answer + '</div>');
+                        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+                    })
+                    .fail(function() {
+                        $('#chat-box').append('<div class="message bot-message">Failed to get response from ChatGPT</div>');
+                        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+                    });
+            });
+
+            $('.question-button').on('click', function() {
+                const question = $(this).text();
+                $('#user-input').val(question);
+                $('#chat-form').submit();
+                $('html, body').animate({ scrollTop: 0 }, 'slow');
+            });
+        });
+    </script>
 </body>
 </html>
