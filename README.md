@@ -10,6 +10,34 @@
 
 <br><br>
 
+
+<!-- Screenshot Section -->
+<h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Screenshots</h2>
+<div align="center" style="margin-top: 20px;">
+
+  <!-- Landing Page Screenshot -->
+  <img src="Screenshots/Landing Page.png" alt="Landing Page" width="800px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-bottom: 20px;"/>
+
+  <div style="display: flex; justify-content: center; margin-top: 20px; gap: 20px;">
+    <!-- Pneumonia, TB, and Fracture Screenshots Side by Side -->
+    <img src="Screenshots/Pnemonia.png" alt="Pneumonia Diagnosis" width="350px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
+    <img src="Screenshots/TB.png" alt="TB Diagnosis" width="350px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
+    <img src="Screenshots/Fracture.png" alt="Fracture Diagnosis" width="350px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
+  </div>
+
+  <!-- FAQ Screenshot -->
+  <img src="Screenshots/FAQ's.png" alt="FAQ's" width="800px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 20px;"/>
+
+</div>
+
+<br><br>
+
+<h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Technologies Used</h2>
+
+<br>
+
+
+
 <h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Technologies Used</h2>
 
 <br>
