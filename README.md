@@ -10,33 +10,26 @@
 
 <br><br>
 
-
 <!-- Screenshot Section -->
 <h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Screenshots</h2>
 <div align="center" style="margin-top: 20px;">
 
-  <!-- Landing Page Screenshot -->
-  <img src="Screenshots/Landing Page.png" alt="Landing Page" width="800px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-bottom: 20px;"/>
+  <!-- Landing Page Screenshot (Smaller) -->
+  <img src="Screenshots/Landing Page.png" alt="Landing Page" width="600px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-bottom: 20px;"/>
 
   <div style="display: flex; justify-content: center; margin-top: 20px; gap: 20px;">
-    <!-- Pneumonia, TB, and Fracture Screenshots Side by Side -->
-    <img src="Screenshots/Pnemonia.png" alt="Pneumonia Diagnosis" width="350px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
-    <img src="Screenshots/TB.png" alt="TB Diagnosis" width="350px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
-    <img src="Screenshots/Fracture.png" alt="Fracture Diagnosis" width="350px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
+    <!-- Pneumonia, TB, and Fracture Screenshots Bigger and Side by Side -->
+    <img src="Screenshots/Pnemonia.png" alt="Pneumonia Diagnosis" width="500px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
+    <img src="Screenshots/TB.png" alt="TB Diagnosis" width="500px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
+    <img src="Screenshots/Fracture.png" alt="Fracture Diagnosis" width="500px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
   </div>
 
-  <!-- FAQ Screenshot -->
-  <img src="Screenshots/FAQ's.png" alt="FAQ's" width="800px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 20px;"/>
+  <!-- FAQ Screenshot (Smaller) -->
+  <img src="Screenshots/FAQ's.png" alt="FAQ's" width="600px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 20px;"/>
 
 </div>
 
 <br><br>
-
-<h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Technologies Used</h2>
-
-<br>
-
-
 
 <h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Technologies Used</h2>
 
@@ -64,45 +57,105 @@
 
 <br><br>
 
-<h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Installation</h2>
-
-<br>
-
-<ol style="font-size: 1.1em; text-align: center;">
-    <li><strong>Clone the repository:</strong>
-        <pre><code>git clone https://github.com/BENi-Aditya/VitalScans.AI.git</code></pre>
-    </li>
-    <br>
-    <li><strong>Navigate to the project directory:</strong>
-        <pre><code>cd VitalScans.AI</code></pre>
-    </li>
-    <br>
-    <li><strong>Install dependencies:</strong>
-        <pre><code>pip install -r requirements.txt</code></pre>
-    </li>
-    <br>
-    <li><strong>Create a `.env` file in the root directory and add necessary API keys (if any).</strong></li>
-    <br>
-    <li><strong>Run the application:</strong>
-        <pre><code>python app.py</code></pre>
-    </li>
-    <br>
-    <li><strong>Access the application:</strong>
-        <pre><code>http://localhost:5000</code></pre>
-    </li>
-</ol>
-
-<br><br>
-
-<h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Usage</h2>
+<h2 style="color: #f39c12; text-align: center; margin-top: 20px;">🌟 Key Features</h2>
 
 <br>
 
 <ul style="font-size: 1.1em; text-align: center;">
-    <li>Upload a chest X-ray or MRI image through the web interface.</li>
-    <li>The AI model processes the image and provides a diagnosis with annotated results.</li>
-    <li>Share the results with your doctor for further consultation.</li>
-    <li>Analyze multiple images for a comprehensive diagnosis.</li>
+    <li><strong>Disease Detection:</strong></li>
+    <ul>
+        <li><strong>Pneumonia Diagnosis:</strong> Detects pneumonia in chest X-rays and provides confidence scores for predictions.</li>
+        <li><strong>Tuberculosis Screening:</strong> Identifies TB-related abnormalities using sophisticated image analysis techniques.</li>
+        <li><strong>Bone Fracture Identification:</strong> Examines MRI and X-ray scans for fractures and offers annotated insights.</li>
+    </ul>
+    <br>
+    <li><strong>Technical Features:</strong></li>
+    <ul>
+        <li><strong>AI-Powered Annotation:</strong> Provides visual overlays to highlight abnormalities in uploaded scans.</li>
+        <li><strong>Interactive Q&A Mode:</strong> Users can interact with an AI-powered system for a deeper understanding of their results.</li>
+        <li><strong>Risk Assessment Reports:</strong> Summarizes findings with severity levels and actionable recommendations for users.</li>
+    </ul>
+    <br>
+    <li><strong>Accessibility:</strong></li>
+    <ul>
+        <li><strong>Remote Diagnostics:</strong> Designed to offer accurate results even in areas lacking advanced medical infrastructure.</li>
+        <li><strong>Multilingual Support:</strong> Supports various languages for inclusivity and ease of use.</li>
+    </ul>
+</ul>
+
+<br><br>
+
+<h2 style="color: #f39c12; text-align: center; margin-top: 20px;">⚙️ How It Works</h2>
+
+<br>
+
+<ul style="font-size: 1.1em; text-align: center;">
+    <li><strong>Upload Scan:</strong> Users upload X-ray or MRI images via a secure web interface.</li>
+    <li><strong>Preprocessing:</strong> The uploaded images are preprocessed using OpenCV to standardize their dimensions and enhance quality.</li>
+    <li><strong>AI Inference:</strong> VitalScans.AI employs deep learning models fine-tuned on large medical datasets to analyze the scans.</li>
+    <li><strong>Results Generation:</strong> The platform generates a detailed report, including confidence scores, annotations, and diagnostic summaries.</li>
+    <li><strong>Interactive Feedback:</strong> Users can query the system for further explanations or export the reports for medical consultations.</li>
+</ul>
+
+<br><br>
+
+<h2 style="color: #f39c12; text-align: center; margin-top: 20px;">📊 Datasets and Model Citations</h2>
+
+<br>
+
+<p style="font-size: 1.1em; text-align: center;">The following datasets were used for training and fine-tuning VitalScans.AI models:</p>
+
+<br>
+
+<pre><code>
+Pneumonia Detection Model:
+@misc{
+  pneumonia-itjkr_dataset,
+  title = {Pneumonia Dataset},
+  type = {Open Source Dataset},
+  author = {Annie},
+  howpublished = {\url{https://universe.roboflow.com/annie-rmqdv/pneumonia-itjkr}},
+  year = {2023},
+  month = {Nov},
+  note = {visited on 2024-11-20},
+}
+
+Tuberculosis Detection Model:
+@misc{
+  tb-detection-227v0_dataset,
+  title = {TB Detection Dataset},
+  type = {Open Source Dataset},
+  author = {KBS},
+  howpublished = {\url{https://universe.roboflow.com/kbs-ymeyd/tb-detection-227v0}},
+  year = {2023},
+  month = {May},
+  note = {visited on 2024-11-20},
+}
+
+Fracture Detection Model:
+@misc{
+  fracture-ov5p1_dataset,
+  title = {Fracture Dataset},
+  type = {Open Source Dataset},
+  author = {Landy},
+  howpublished = {\url{https://universe.roboflow.com/landy-aw2jb/fracture-ov5p1}},
+  year = {2024},
+  month = {Apr},
+  note = {visited on 2024-11-20},
+}
+</code></pre>
+
+<br><br>
+
+<h2 style="color: #f39c12; text-align: center; margin-top: 20px;">🌐 Potential Use Cases</h2>
+
+<br>
+
+<ul style="font-size: 1.1em; text-align: center;">
+    <li><strong>Rural Healthcare:</strong> Brings diagnostic capabilities to underserved regions, enabling faster and more accurate healthcare access.</li>
+    <li><strong>Triage Tool:</strong> Assists medical facilities in prioritizing cases based on the severity detected by AI.</li>
+    <li><strong>Medical Education:</strong> Provides a tool for students and professionals to practice diagnostic skills and learn from AI-driven insights.</li>
+    <li><strong>Remote Consultations:</strong> Facilitates telemedicine by offering a quick preliminary diagnosis for doctors to review.</li>
 </ul>
 
 <br><br>
@@ -111,13 +164,4 @@
 
 <br>
 
-<p style="font-size: 1.1em; text-align: center;">Contributions are welcome! If you have ideas for new features or improvements, feel free to fork the repository, make changes, and open a pull request. Let’s make healthcare more accessible together!</p>
-
-<br><br>
-
----
-
-<div align="center">
-  <h2>VitalScans.AI - Empowering Early Diagnosis</h2>
-  <p>Transforming healthcare with AI-powered lung disease detection from the comfort of your home.</p>
-</div>
+<p style="font-size: 1.1em; text-align: center;">We welcome contributions to improve VitalScans.AI! Fork the repository, make improvements, and submit a pull request.</p>
