@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VitalScans.AI - Advanced Chest X-Ray Analysis</title>
+    <title>VitalScans.AI</title>
     <style>
         body, html {
             margin: 0;
@@ -11,116 +11,192 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
             color: #ffffff;
-            height: 100%;
-            background: linear-gradient(135deg, #1c2a4a 0%, #0a1128 100%);
-        }
-        .container {
+            height: 100vh;
+            background: linear-gradient(135deg, #1a2a4a 0%, #0a1128 100%) fixed;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
+            font-size: 18px; /* Increased base font size for larger overall appearance */
         }
-        .content-box {
+
+        .container {
+            width: 100%;
+            max-width: 600px; /* Increased from 500px for a larger container */
+            margin: 0 auto;
+            padding: 3rem; /* Increased padding for more space */
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.5rem; /* Increased from 2.5rem for a bigger title */
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 1rem; /* Decreased from 1.1rem as requested */
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .upload-form {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
+            padding: 2.5rem; /* Increased padding for more space */
         }
-        h1 {
-            font-weight: 600;
-            color: #ffffff;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+
+        .model-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem; /* Increased gap for more space between buttons */
+            margin-bottom: 2rem; /* Increased margin for more space */
         }
-        .upload-btn, .analyze-btn {
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            color: white;
+
+        .model-button {
+            flex: 1;
+            padding: 0.9rem 1.2rem; /* Increased padding for larger buttons */
+            font-size: 1.1rem; /* Increased font size */
             border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            border-radius: 50px;
+            border-radius: 10px;
+            background-color: #3498db;
+            color: white;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transform: translateY(0);
         }
-        .upload-btn:hover, .analyze-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+
+        .model-button:hover {
+            background-color: #2980b9;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.7); /* Increased glow effect */
         }
-        .upload-btn:active, .analyze-btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+
+        .model-button.selected {
+            background-color: #2471a3; /* Different shade of blue for selected state */
+            box-shadow: 0 0 25px rgba(52, 152, 219, 1); /* Increased glow effect for selected state */
         }
-        #file-input {
+
+        .file-input {
             display: none;
         }
-        #selected-file {
-            margin-top: 20px;
-            font-style: italic;
-            color: #cccccc;
+
+        .button-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem; /* Increased gap */
+            max-width: 350px; /* Increased from 300px */
+            margin: 0 auto;
         }
-        #preview-image {
-            max-width: 100%;
-            max-height: 300px;
-            margin: 20px auto 0;
+
+        .file-label, .submit-button {
+            display: inline-block;
+            width: 100%;
+            padding: 0.9rem 0; /* Increased padding */
+            font-size: 1.1rem; /* Increased font size */
+            background-color: #3498db;
+            color: white;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+        }
+
+        .file-label:hover, .submit-button:hover {
+            background-color: #2980b9;
+        }
+
+        .submit-button:disabled {
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+        }
+
+        #file-name {
+            margin: 0.75rem 0; /* Increased margin */
+            font-style: italic;
+            min-height: 1.5em;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .preview-container {
+            width: 250px; /* Increased from 200px */
+            height: 250px; /* Increased from 200px */
+            margin: 1.5rem auto; /* Increased margin */
+            border-radius: 10px;
+            overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+        }
+
+        #preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="content-box">
-            <h1>VitalScans.AI</h1>
-            <form action="/upload" method="post" enctype="multipart/form-data" id="upload-form">
-                <input type="file" id="file-input" name="file" accept="image/*" required>
-                <button type="button" class="upload-btn" id="upload-btn">Upload Scan</button>
-                <p id="selected-file"></p>
-                <img id="preview-image" src="" alt="Preview">
-            </form>
-        </div>
+        <h1>VitalScans.AI</h1>
+        <p>Upload X-ray image for analysis</p>
+        <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
+            <div class="model-buttons">
+                <button type="button" class="model-button" data-model="pneumonia">Pneumonia</button>
+                <button type="button" class="model-button" data-model="tuberculosis">Tuberculosis</button>
+                <button type="button" class="model-button" data-model="fracture">Fracture</button>
+            </div>
+            <div id="file-name"></div>
+            <div class="preview-container">
+                <img id="preview-image" alt="Preview">
+            </div>
+            <div class="button-wrapper">
+                <input type="file" name="file" id="file-input" class="file-input" accept="image/*" required>
+                <label for="file-input" class="file-label">Choose File</label>
+                <input type="hidden" name="selected-model" id="selected-model" value="pneumonia">
+                <button type="submit" class="submit-button" disabled>Upload Scan</button>
+            </div>
+        </form>
     </div>
 
     <script>
         const fileInput = document.getElementById('file-input');
-        const uploadBtn = document.getElementById('upload-btn');
-        const selectedFile = document.getElementById('selected-file');
+        const fileName = document.getElementById('file-name');
+        const submitButton = document.querySelector('.submit-button');
+        const modelButtons = document.querySelectorAll('.model-button');
+        const selectedModelInput = document.getElementById('selected-model');
+        const previewContainer = document.querySelector('.preview-container');
         const previewImage = document.getElementById('preview-image');
-        const uploadForm = document.getElementById('upload-form');
 
-        uploadBtn.addEventListener('click', () => {
-            if (uploadBtn.textContent === 'Upload Scan') {
-                fileInput.click();
-            } else {
-                uploadForm.submit();
-            }
-        });
-
-        fileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                selectedFile.textContent = `Selected file: ${file.name}`;
-                uploadBtn.textContent = 'Analyze';
-                uploadBtn.className = 'analyze-btn';
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                fileName.textContent = file.name;
+                submitButton.disabled = false;
                 
+                // Show preview
                 const reader = new FileReader();
-                reader.onload = (e) => {
+                reader.onload = function(e) {
                     previewImage.src = e.target.result;
-                    previewImage.style.display = 'block';
-                };
+                    previewContainer.style.display = 'block';
+                }
                 reader.readAsDataURL(file);
+            } else {
+                fileName.textContent = '';
+                submitButton.disabled = true;
+                previewContainer.style.display = 'none';
             }
         });
+
+        modelButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                modelButtons.forEach(btn => btn.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedModelInput.value = this.dataset.model;
+            });
+        });
+
+        // Set default selected model
+        modelButtons[0].click();
     </script>
 </body>
 </html>

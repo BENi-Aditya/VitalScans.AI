@@ -107,7 +107,7 @@
             color: #2ecc71;
         }
 
-        .pneumonia-text {
+        .pneumonia-text, .tuberculosis-text, .fracture-text {
             color: #e74c3c;
         }
 
@@ -249,7 +249,7 @@
                 </div>
                 <div class="prediction-box">
                     <p class="prediction-text">
-                        Prediction: <span id="predictionText" class="{{ 'normal-text' if predictions[0]['class'] == 'Normal' else 'pneumonia-text' }}">
+                        Prediction: <span id="predictionText" class="{{ 'normal-text' if predictions[0]['class'] == 'Normal' else (selected_model + '-text') }}">
                             {{ predictions[0]['class'] }}
                         </span>
                         (Confidence: {{ (predictions[0]['confidence'] * 100)|round(2) }}%)
@@ -260,106 +260,311 @@
                 <h2>Medical Assistant Chat</h2>
                 <div class="chat-box" id="chat-box">
                     <div class="message bot-message">
-                        Hello! I'm your medical assistant. I can provide information about your scan results and answer questions about pneumonia and other lung issues. How can I help you today?
+                        Hello! I'm your medical assistant. I can provide information about your {{ selected_model }} scan results and answer related questions. How can I help you today?
                     </div>
                 </div>
                 <form id="chat-form" class="chat-input">
                     <input type="text" id="user-input" placeholder="Type your question..." required>
+                    <input type="hidden" id="selected-model" value="{{ selected_model }}">
                     <button type="submit" class="send-button">Send</button>
                 </form>
             </div>
         </div>
         <a href="/" class="analyze-button">Analyze Another Image</a>
+        <style>
+            /* ... (previous styles remain unchanged) ... */
         
+            .analyze-button {
+                display: block;
+                width: calc(50% - 1.25rem); /* Adjust width to match content wrapper */
+                padding: 1rem;
+                margin: 0 auto 2.5rem;
+                background: #3498db;
+                color: white;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 10px;
+                font-size: 1.2rem;
+                transition: background-color 0.3s;
+            }
+        
+            .analyze-button:hover {
+                background: #2980b9;
+            }
+        
+            /* ... (rest of the styles remain unchanged) ... */
+        </style>
         <div class="question-categories">
             <h2>Ask our Medical Assistant</h2>
             <p>Click on a question to ask:</p>
             
-            <div class="category">
-                <h3>Understanding Pneumonia</h3>
-                <div class="question-list">
-                    <button class="question-button">What is pneumonia?</button>
-                    <button class="question-button">What are the common symptoms of pneumonia?</button>
-                    <button class="question-button">What causes pneumonia?</button>
-                    <button class="question-button">Is pneumonia contagious?</button>
-                    <button class="question-button">How is pneumonia diagnosed?</button>
+            <div id="pneumonia-questions" style="display: {{ 'block' if selected_model == 'pneumonia' else 'none' }};">
+                <div class="category">
+                    <h3>Understanding Pneumonia</h3>
+                    <div class="question-list">
+                        <button class="question-button">What is pneumonia?</button>
+                        <button class="question-button">What are the common symptoms of pneumonia?</button>
+                        <button class="question-button">What causes pneumonia?</button>
+                        <button class="question-button">Is pneumonia contagious?</button>
+                        <button class="question-button">How is pneumonia diagnosed?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>Prevention and Risk Factors</h3>
+                    <div class="question-list">
+                        <button class="question-button">How can I prevent pneumonia?</button>
+                        <button class="question-button">Who is at higher risk of developing pneumonia?</button>
+                        <button class="question-button">Are there vaccines for pneumonia?</button>
+                        <button class="question-button">Can pneumonia occur more than once?</button>
+                        <button class="question-button">What lifestyle changes can reduce the risk of lung diseases?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>Treatment and Recovery</h3>
+                    <div class="question-list">
+                        <button class="question-button">How is pneumonia treated?</button>
+                        <button class="question-button">How long does it take to recover from pneumonia?</button>
+                        <button class="question-button">Can pneumonia be treated at home?</button>
+                        <button class="question-button">What should I eat or avoid while recovering from pneumonia?</button>
+                        <button class="question-button">Are there long-term effects of pneumonia?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>Other Lung Diseases</h3>
+                    <div class="question-list">
+                        <button class="question-button">What are common lung diseases besides pneumonia?</button>
+                        <button class="question-button">What is tuberculosis (TB), and how is it different from pneumonia?</button>
+                        <button class="question-button">What is COPD, and who is at risk?</button>
+                        <button class="question-button">What are the early symptoms of lung cancer?</button>
+                        <button class="question-button">How can I tell the difference between a common cold, bronchitis, and pneumonia?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>When to Seek Help</h3>
+                    <div class="question-list">
+                        <button class="question-button">When should I see a doctor if I suspect pneumonia?</button>
+                        <button class="question-button">What does shortness of breath indicate?</button>
+                        <button class="question-button">How can I tell if a cough is serious?</button>
+                        <button class="question-button">What are the warning signs of a lung infection?</button>
+                        <button class="question-button">What should I do if a child or elderly person shows symptoms of pneumonia?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>General Lung Health</h3>
+                    <div class="question-list">
+                        <button class="question-button">How can I improve my lung health?</button>
+                        <button class="question-button">Does air pollution affect the lungs?</button>
+                        <button class="question-button">What exercises are good for improving lung capacity?</button>
+                        <button class="question-button">Does smoking always lead to lung disease?</button>
+                        <button class="question-button">How can I protect my lungs during a flu season or pandemic?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>FAQs Related to Scans and Imaging</h3>
+                    <div class="question-list">
+                        <button class="question-button">What does a lung X-ray show?</button>
+                        <button class="question-button">How accurate are scans for detecting lung diseases?</button>
+                        <button class="question-button">What is the difference between an X-ray, CT scan, and MRI for lung diagnosis?</button>
+                        <button class="question-button">Can lung scans detect issues before symptoms appear?</button>
+                        <button class="question-button">Do I need a doctor's referral for a lung scan?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>Common Myths and Misconceptions</h3>
+                    <div class="question-list">
+                        <button class="question-button">Is pneumonia just a bad cold?</button>
+                        <button class="question-button">Can young and healthy people get lung diseases?</button>
+                        <button class="question-button">Does pneumonia only occur in cold weather?</button>
+                        <button class="question-button">Do antibiotics cure all types of pneumonia?</button>
+                        <button class="question-button">Is pneumonia always serious?</button>
+                    </div>
                 </div>
             </div>
-            
-            <div class="category">
-                <h3>Prevention and Risk Factors</h3>
-                <div class="question-list">
-                    <button class="question-button">How can I prevent pneumonia?</button>
-                    <button class="question-button">Who is at higher risk of developing pneumonia?</button>
-                    <button class="question-button">Are there vaccines for pneumonia?</button>
-                    <button class="question-button">Can pneumonia occur more than once?</button>
-                    <button class="question-button">What lifestyle changes can reduce the risk of lung diseases?</button>
+
+            <div id="tuberculosis-questions" style="display: {{ 'block' if selected_model == 'tuberculosis' else 'none' }};">
+                <div class="category">
+                    <h3>Understanding Tuberculosis</h3>
+                    <div class="question-list">
+                        <button class="question-button">What is tuberculosis (TB)?</button>
+                        <button class="question-button">What are the common symptoms of tuberculosis?</button>
+                        <button class="question-button">What causes tuberculosis?</button>
+                        <button class="question-button">Is tuberculosis contagious?</button>
+                        <button class="question-button">How is tuberculosis diagnosed?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>Prevention and Risk Factors</h3>
+                    <div class="question-list">
+                        <button class="question-button">How can I prevent tuberculosis?</button>
+                        <button class="question-button">Who is at higher risk of developing tuberculosis?</button>
+                        <button class="question-button">Are there vaccines for tuberculosis?</button>
+                        <button class="question-button">Can tuberculosis occur more than once?</button>
+                        <button class="question-button">What lifestyle changes can reduce the risk of tuberculosis?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>Treatment and Recovery</h3>
+                    <div class="question-list">
+                        <button class="question-button">How is tuberculosis treated?</button>
+                        <button class="question-button">How long does it take to recover from tuberculosis?</button>
+                        <button class="question-button">Can tuberculosis be treated at home?</button>
+                        <button class="question-button">What should I eat or avoid while recovering from tuberculosis?</button>
+                        <button class="question-button">Are there long-term effects of tuberculosis?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>Other Lung Diseases</h3>
+                    <div class="question-list">
+                        <button class="question-button">What are common lung diseases besides tuberculosis?</button>
+                        <button class="question-button">What is the difference between tuberculosis and pneumonia?</button>
+                        <button class="question-button">What is COPD, and who is at risk?</button>
+                        <button class="question-button">What are the early symptoms of lung cancer?</button>
+                        <button class="question-button">How can I tell the difference between a common cold, bronchitis, and tuberculosis?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>When to Seek Help</h3>
+                    <div class="question-list">
+                        <button class="question-button">When should I see a doctor if I suspect tuberculosis?</button>
+                        <button class="question-button">What does persistent coughing indicate?</button>
+                        <button class="question-button">How can I tell if a cough is serious?</button>
+                        <button class="question-button">What are the warning signs of a tuberculosis infection?</button>
+                        <button class="question-button">What should I do if a child or elderly person shows symptoms of tuberculosis?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>General Lung Health</h3>
+                    <div class="question-list">
+                        <button class="question-button">How can I improve my lung health?</button>
+                        <button class="question-button">Does air pollution affect the lungs?</button>
+                        <button class="question-button">What exercises are good for improving lung capacity?</button>
+                        <button class="question-button">Does smoking increase the risk of tuberculosis?</button>
+                        <button class="question-button">How can I protect my lungs during a flu season or pandemic?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>FAQs Related to Scans and Imaging</h3>
+                    <div class="question-list">
+                        <button class="question-button">What does a chest X-ray show for tuberculosis?</button>
+                        <button class="question-button">How accurate are scans for detecting tuberculosis?</button>
+                        <button class="question-button">What is the difference between an X-ray, CT scan, and MRI for tuberculosis diagnosis?</button>
+                        <button class="question-button">Can scans detect tuberculosis before symptoms appear?</button>
+                        <button class="question-button">Do I need a doctor's referral for a tuberculosis scan?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>Common Myths and Misconceptions</h3>
+                    <div class="question-list">
+                        <button class="question-button">Is tuberculosis just a severe cough?</button>
+                        <button class="question-button">Can young and healthy people get tuberculosis?</button>
+                        <button class="question-button">Does tuberculosis only occur in underdeveloped regions?</button>
+                        <button class="question-button">Do antibiotics cure all types of tuberculosis?</button>
+                        <button class="question-button">Is tuberculosis always life-threatening?</button>
+                    </div>
                 </div>
             </div>
-            
-            <div class="category">
-                <h3>Treatment and Recovery</h3>
-                <div class="question-list">
-                    <button class="question-button">How is pneumonia treated?</button>
-                    <button class="question-button">How long does it take to recover from pneumonia?</button>
-                    <button class="question-button">Can pneumonia be treated at home?</button>
-                    <button class="question-button">What should I eat or avoid while recovering from pneumonia?</button>
-                    <button class="question-button">Are there long-term effects of pneumonia?</button>
+
+            <div id="fracture-questions" style="display: {{ 'block' if selected_model == 'fracture' else 'none' }};">
+                <div class="category">
+                    <h3>Understanding Broken Bones and Fractures</h3>
+                    <div class="question-list">
+                        <button class="question-button">What are broken bones and fractures?</button>
+                        <button class="question-button">What are the common symptoms of a fracture?</button>
+                        <button class="question-button">What causes bones to break?</button>
+                        <button class="question-button">How are fractures classified (e.g., simple, compound)?</button>
+                        <button class="question-button">How is a broken bone diagnosed?</button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="category">
-                <h3>Other Lung Diseases</h3>
-                <div class="question-list">
-                    <button class="question-button">What are common lung diseases besides pneumonia?</button>
-                    <button class="question-button">What is tuberculosis (TB), and how is it different from pneumonia?</button>
-                    <button class="question-button">What is COPD, and who is at risk?</button>
-                    <button class="question-button">What are the early symptoms of lung cancer?</button>
-                    <button class="question-button">How can I tell the difference between a common cold, bronchitis, and pneumonia?</button>
+                
+                <div class="category">
+                    <h3>Prevention and Risk Factors</h3>
+                    <div class="question-list">
+                        <button class="question-button">How can I prevent broken bones and fractures?</button>
+                        <button class="question-button">Who is at higher risk of bone fractures?</button>
+                        <button class="question-button">Does bone density affect fracture risk?</button>
+                        <button class="question-button">Can diet or lifestyle impact bone strength?</button>
+                        <button class="question-button">Are children or elderly people more prone to fractures?</button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="category">
-                <h3>When to Seek Help</h3>
-                <div class="question-list">
-                    <button class="question-button">When should I see a doctor if I suspect pneumonia?</button>
-                    <button class="question-button">What does shortness of breath indicate?</button>
-                    <button class="question-button">How can I tell if a cough is serious?</button>
-                    <button class="question-button">What are the warning signs of a lung infection?</button>
-                    <button class="question-button">What should I do if a child or elderly person shows symptoms of pneumonia?</button>
+                
+                <div class="category">
+                    <h3>Treatment and Recovery</h3>
+                    <div class="question-list">
+                        <button class="question-button">How are broken bones treated?</button>
+                        <button class="question-button">How long does it take to recover from a fracture?</button>
+                        <button class="question-button">What are the different types of casts and splints used for fractures?</button>
+                        <button class="question-button">Do all fractures require surgery?</button>
+                        <button class="question-button">What exercises or therapies help in recovering from a fracture?</button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="category">
-                <h3>General Lung Health</h3>
-                <div class="question-list">
-                    <button class="question-button">How can I improve my lung health?</button>
-                    <button class="question-button">Does air pollution affect the lungs?</button>
-                    <button class="question-button">What exercises are good for improving lung capacity?</button>
-                    <button class="question-button">Does smoking always lead to lung disease?</button>
-                    <button class="question-button">How can I protect my lungs during a flu season or pandemic?</button>
+                
+                <div class="category">
+                    <h3>Bone Health and Conditions</h3>
+                    <div class="question-list">
+                        <button class="question-button">What is osteoporosis, and how does it relate to fractures?</button>
+                        <button class="question-button">What is a stress fracture, and how is it different from other fractures?</button>
+                        <button class="question-button">How does arthritis impact bone health?</button>
+                        <button class="question-button">What are common bone diseases besides fractures?</button>
+                        <button class="question-button">How can I tell the difference between a sprain, strain, and fracture?</button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="category">
-                <h3>FAQs Related to Scans and Imaging</h3>
-                <div class="question-list">
-                    <button class="question-button">What does a lung X-ray show?</button>
-                    <button class="question-button">How accurate are scans for detecting lung diseases?</button>
-                    <button class="question-button">What is the difference between an X-ray, CT scan, and MRI for lung diagnosis?</button>
-                    <button class="question-button">Can lung scans detect issues before symptoms appear?</button>
-                    <button class="question-button">Do I need a doctor's referral for a lung scan?</button>
+                
+                <div class="category">
+                    <h3>When to Seek Help</h3>
+                    <div class="question-list">
+                        <button class="question-button">When should I see a doctor if I suspect a broken bone?</button>
+                        <button class="question-button">What are the warning signs of a severe fracture?</button>
+                        <button class="question-button">How can I recognize if a fracture is healing poorly?</button>
+                        <button class="question-button">What should I do if a child or elderly person has a broken bone?</button>
+                        <button class="question-button">What are signs of infection in a fracture site?</button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="category">
-                <h3>Common Myths and Misconceptions</h3>
-                <div class="question-list">
-                    <button class="question-button">Is pneumonia just a bad cold?</button>
-                    <button class="question-button">Can young and healthy people get lung diseases?</button>
-                    <button class="question-button">Does pneumonia only occur in cold weather?</button>
-                    <button class="question-button">Do antibiotics cure all types of pneumonia?</button>
-                    <button class="question-button">Is pneumonia always serious?</button>
+                
+                <div class="category">
+                    <h3>General Bone Health</h3>
+                    <div class="question-list">
+                        <button class="question-button">How can I improve my bone health?</button>
+                        <button class="question-button">Does calcium intake affect bone strength?</button>
+                        <button class="question-button">What exercises are good for maintaining healthy bones?</button>
+                        <button class="question-button">How does vitamin D help in bone health?</button>
+                        <button class="question-button">Can smoking or alcohol affect bone strength?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>FAQs Related to Scans and Imaging</h3>
+                    <div class="question-list">
+                        <button class="question-button">What does an X-ray show for a broken bone?</button>
+                        <button class="question-button">How accurate are bone scans for detecting fractures?</button>
+                        <button class="question-button">What is the difference between an X-ray, CT scan, and MRI for bone injuries?</button>
+                        <button class="question-button">Can scans detect hairline or stress fractures?</button>
+                        <button class="question-button">Do I need a doctor's referral for a bone scan?</button>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h3>Common Myths and Misconceptions</h3>
+                    <div class="question-list">
+                        <button class="question-button">Are broken bones always painful?</button>
+                        <button class="question-button">Can bones heal without medical treatment?</button>
+                        <button class="question-button">Do fractures only happen from severe accidents?</button>
+                        <button class="question-button">Is a bone weaker after it heals from a fracture?</button>
+                        <button class="question-button">Are all fractures visible on X-rays?</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -371,6 +576,7 @@
             $('#annotatedImage').attr('src', '{{ result_image }}?' + new Date().getTime());
             const prediction = "{{ predictions[0]['class'] }}";
             const confidence = "{{ (predictions[0]['confidence'] * 100)|round(2) }}";
+            const selectedModel = "{{ selected_model }}";
 
             function resizeImage(img, targetWidth, targetHeight) {
                 const canvas = document.createElement('canvas');
@@ -444,14 +650,16 @@
                 $.post('/ask_chatgpt', { 
                     question: userInput,
                     prediction: prediction,
-                    confidence: confidence
+                    confidence: confidence,
+                    selected_model: selectedModel
                 })
                     .done(function(response) {
                         $('#chat-box').append('<div class="message bot-message">' + response.answer + '</div>');
                         $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
                     })
-                    .fail(function() {
-                        $('#chat-box').append('<div class="message bot-message">Failed to get response from ChatGPT</div>');
+                    .fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error("Error:", textStatus, errorThrown);
+                        $('#chat-box').append('<div class="message bot-message">Failed to get response from ChatGPT. Please try again.</div>');
                         $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
                     });
             });

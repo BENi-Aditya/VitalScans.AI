@@ -1,8 +1,6 @@
-flask==2.0.1
-monai==1.2.0
-torch==2.0.0
-pillow==9.5.0
-python-dotenv==0.19.0
-openai==1.0.0
-numpy==1.23.5
-pydicom==2.3.1 
+Flask==2.3.2              # For creating and running the web application
+Pillow==10.0.0            # For image processing (PIL library)
+python-dotenv==1.0.0      # For loading environment variables from a .env file
+inference-sdk==0.1.0      # Replace with the exact version of the Inference SDK you are using
+datetime                  # Included in the Python standard library, no need to install
+chatbot                   # Ensure the chatbot package is available in your environment or custom implementation
