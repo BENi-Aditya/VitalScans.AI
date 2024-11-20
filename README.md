@@ -14,36 +14,25 @@
 <h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Screenshots</h2>
 <div align="center" style="margin-top: 20px;">
 
-  <!-- Landing Page Screenshot (Smaller) -->
-  <img src="Screenshots/Landing Page.png" alt="Landing Page" width="600px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-bottom: 20px;"/>
+  <!-- Landing Page Screenshot (Same size as others) -->
+  <img src="Screenshots/Landing Page.png" alt="Landing Page" width="500px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-bottom: 20px;"/>
 
   <div style="display: flex; justify-content: center; margin-top: 20px; gap: 20px;">
-    <!-- Pneumonia, TB, and Fracture Screenshots Bigger and Side by Side -->
+    <!-- Pneumonia, TB, and Fracture Screenshots (Same size) -->
     <img src="Screenshots/Pnemonia.png" alt="Pneumonia Diagnosis" width="500px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
     <img src="Screenshots/TB.png" alt="TB Diagnosis" width="500px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
     <img src="Screenshots/Fracture.png" alt="Fracture Diagnosis" width="500px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"/>
   </div>
 
-  <!-- FAQ Screenshot (Smaller) -->
-  <img src="Screenshots/FAQ's.png" alt="FAQ's" width="600px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 20px;"/>
+  <!-- FAQ Screenshot (Same size as others) -->
+  <img src="Screenshots/FAQ's.png" alt="FAQ's" width="500px" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin-top: 20px;"/>
 
 </div>
 
 <br><br>
 
-<h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Technologies Used</h2>
 
-<br>
 
-<ul style="font-size: 1.1em; text-align: center;">
-    <li><strong>Python</strong>: For backend logic and AI integration.</li>
-    <li><strong>Flask</strong>: To build the web application framework.</li>
-    <li><strong>TensorFlow/Keras</strong>: For training and implementing deep learning models.</li>
-    <li><strong>OpenCV</strong>: For image preprocessing and handling.</li>
-    <li><strong>Bootstrap</strong>: For responsive UI design.</li>
-</ul>
-
-<br><br>
 
 <h2 style="color: #f39c12; text-align: center; margin-top: 20px;">Concept and Need</h2>
 
