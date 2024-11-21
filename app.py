@@ -116,4 +116,4 @@ def ask_chatgpt():
       return jsonify({'answer': "I'm sorry, but I encountered an error while processing your request. Please try again later."})
 
 if __name__ == '__main__':
-  app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
