@@ -133,6 +133,24 @@
             object-fit: contain;
             background: rgba(0, 0, 0, 0.2);
         }
+        .parkinsons-button {
+            display: inline-block;
+            width: 100%;
+            padding: 0.9rem 0;
+            font-size: 1.1rem;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+            margin-top: 1.5rem;
+            text-decoration: none;
+        }
+
+        .parkinsons-button:hover {
+            background-color: #c0392b;
+        }
     </style>
 </head>
 <body>
@@ -156,6 +174,7 @@
                 <button type="submit" class="submit-button" disabled>Upload Scan</button>
             </div>
         </form>
+        <a href="/parkinsons_test" class="parkinsons-button">Parkinson's Detection Test</a>
     </div>
 
     <script>

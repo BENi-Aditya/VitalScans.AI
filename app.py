@@ -4,6 +4,7 @@ import os
 from inference_sdk import InferenceHTTPClient
 from datetime import datetime
 from chatbot import chatbot
+from parkinsons_detection import get_random_pattern, analyze_tracing
 
 # Initialize Flask App
 app = Flask(__name__)
@@ -115,5 +116,22 @@ def ask_chatgpt():
       app.logger.error(f"Error in ask_chatgpt: {str(e)}")
       return jsonify({'answer': "I'm sorry, but I encountered an error while processing your request. Please try again later."})
 
+@app.route('/parkinsons_test')
+def parkinsons_test():
+    return render_template('parkinsons_test.html')
+
+@app.route('/get_pattern', methods=['GET'])
+def get_pattern():
+    pattern = get_random_pattern()
+    return jsonify(pattern)
+
+@app.route('/analyze_tracing', methods=['POST'])
+def analyze_tracing_route():
+    data = request.json
+    user_path = data['user_path']
+    original_path = data['original_path']
+    result = analyze_tracing(user_path, original_path)
+    return jsonify(result)
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+  app.run(debug=True)

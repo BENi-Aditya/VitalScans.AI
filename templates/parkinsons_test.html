@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitalScans.AI - Parkinson's Detection Test</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a4a 0%, #0a1128 100%) fixed;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #result {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .highlight {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #f39c12;
+        }
+
+        .risk-low {
+            color: #2ecc71;
+        }
+
+        .risk-medium {
+            color: #f39c12;
+        }
+
+        .risk-high {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VitalScans.AI</h1>
+        <h2>Parkinson's Detection Test</h2>
+        <div id="canvas-container">
+            <canvas id="patternCanvas" width="300" height="300"></canvas>
+            <canvas id="userCanvas" width="300" height="300"></canvas>
+        </div>
+        <div class="button-container">
+            <button id="newPatternBtn">New Pattern</button>
+            <button id="analyzeBtn">Analyze</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let originalPattern = [];
+        let userPath = [];
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        const patternCanvas = document.getElementById('patternCanvas');
+        const userCanvas = document.getElementById('userCanvas');
+        const patternCtx = patternCanvas.getContext('2d');
+        const userCtx = userCanvas.getContext('2d');
+
+        function drawPattern(pattern) {
+            patternCtx.clearRect(0, 0, patternCanvas.width, patternCanvas.height);
+            patternCtx.beginPath();
+            patternCtx.moveTo(pattern[0][0] * 300, pattern[0][1] * 300);
+            for (let i = 1; i < pattern.length; i++) {
+                patternCtx.lineTo(pattern[i][0] * 300, pattern[i][1] * 300);
+            }
+            patternCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            patternCtx.lineWidth = 2;
+            patternCtx.stroke();
+        }
+
+        function getNewPattern() {
+            $.get('/get_pattern', function(data) {
+                originalPattern = data;
+                drawPattern(data);
+                clearUserCanvas();
+            });
+        }
+
+        function clearUserCanvas() {
+            userCtx.clearRect(0, 0, userCanvas.width, userCanvas.height);
+            userPath = [];
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = getCanvasCoordinates(e);
+            userCtx.beginPath();
+            userCtx.moveTo(lastX, lastY);
+            userPath.push([lastX / 300, lastY / 300]);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            let [x, y] = getCanvasCoordinates(e);
+            
+            userCtx.lineWidth = 2;
+            userCtx.lineCap = 'round';
+            userCtx.strokeStyle = '#3498db';
+            
+            userCtx.quadraticCurveTo(lastX, lastY, (lastX + x) / 2, (lastY + y) / 2);
+            userCtx.stroke();
+            
+            [lastX, lastY] = [x, y];
+            userPath.push([x / 300, y / 300]);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            userCtx.stroke();
+        }
+
+        function getCanvasCoordinates(e) {
+            const rect = userCanvas.getBoundingClientRect();
+            return [
+                e.clientX - rect.left,
+                e.clientY - rect.top
+            ];
+        }
+
+        userCanvas.addEventListener('mousedown', startDrawing);
+        userCanvas.addEventListener('mousemove', draw);
+        userCanvas.addEventListener('mouseup', stopDrawing);
+        userCanvas.addEventListener('mouseout', stopDrawing);
+
+        document.getElementById('newPatternBtn').addEventListener('click', getNewPattern);
+
+        document.getElementById('analyzeBtn').addEventListener('click', function() {
+            $.ajax({
+                url: '/analyze_tracing',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ user_path: userPath, original_path: originalPattern }),
+                success: function(result) {
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML = `
+                        <h3>Analysis Result</h3>
+                        <p><span class="highlight">Parkinson's Risk Level:</span> <span class="risk-${result.risk.toLowerCase()}">${result.risk}</span></p>
+                        <p>Overall Score: ${result.score.toFixed(2)}</p>
+                        <p>Deviation: ${result.deviation.toFixed(4)}</p>
+                        <p>Smoothness: ${result.smoothness.toFixed(4)}</p>
+                        <p>Speed Consistency: ${result.speed_consistency.toFixed(4)}</p>
+                    `;
+                }
+            });
+        });
+
+        // Initialize with a new pattern
+        getNewPattern();
+    </script>
+</body>
+</html>
