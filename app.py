@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, url_for, jsonify
 from PIL import Image, ImageDraw, ImageFont
 import os
+import socket
 from inference_sdk import InferenceHTTPClient
 from datetime import datetime
 from chatbot import chatbot
@@ -18,7 +19,7 @@ PNEUMONIA_CLIENT = InferenceHTTPClient(
   api_url=os.getenv("ROBOFLOW_API_URL"),
   api_key=os.getenv("ROBOFLOW_API_KEY")
 )
-PNEUMONIA_MODEL_ID = "pneumonia-itjkr/2"  # Update this with your exact model version
+PNEUMONIA_MODEL_ID = "pneumonia-itjkr/2"  # Update this w ith your exact model version
 
 TB_CLIENT = InferenceHTTPClient(
   api_url="https://detect.roboflow.com",
@@ -133,5 +134,21 @@ def analyze_tracing_route():
     result = analyze_tracing(user_path, original_path)
     return jsonify(result)
 
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.255.255.255', 1))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
+
 if __name__ == '__main__':
-  app.run(debug=True)
+    host = get_ip()
+    port = 8080  # or 3000
+    print(f"Running on http://127.0.0.1:{port} (local access only)")
+    print(f"Running on http://{host}:{port} (accessible from other devices on the network)")
+    app.run(debug=True, host='0.0.0.0', port=port)

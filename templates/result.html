@@ -1,268 +1,693 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VitalScans.AI - Results</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body, html {
+        /* Base and Reset Styles */
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            box-sizing: border-box;
+        }
+        
+        body, html {
+            height: 100%;
+            width: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 16px;
             line-height: 1.6;
             color: #ffffff;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a2a4a 0%, #0a1128 100%) fixed;
+            background: linear-gradient(135deg, #1A1F2C 0%, #0a1128 100%) fixed;
+            overflow-x: hidden;
         }
-
-        .container {
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #ffffff, #9b87f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            opacity: 0.85;
+        }
+        
+        /* Layout */
+        .results-container {
+            width: 100%;
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
-
-        h1, h2, h3 {
-            margin: 0;
-            color: #ffffff;
-        }
-
-        h1 {
+        
+        .results-header {
             text-align: center;
-            font-size: 2.5rem;
             margin-bottom: 2.5rem;
+            position: relative;
         }
-
-        h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
+        
+        .results-subtitle {
+            font-size: 1.2rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.3s forwards;
         }
-
-        h3 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-        }
-
+        
         .content-wrapper {
             display: flex;
             gap: 2.5rem;
             margin-bottom: 2.5rem;
-            min-height: 700px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-
+        
+        /* Card styles */
         .result-container, .chat-container {
             flex: 1;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
+            min-width: 320px;
+            max-width: 475px;
+            height: 750px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
             padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-container {
+            animation: slideUp 1s ease 0.4s forwards;
             display: flex;
             flex-direction: column;
-            height: 700px;
-        }
-
-        .result-container {
             align-items: center;
         }
-
+        
+        .chat-container {
+            animation: slideUp 1s ease 0.6s forwards;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-glow {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(155, 135, 245, 0.15) 0%, rgba(155, 135, 245, 0) 70%);
+            pointer-events: none;
+            z-index: -1;
+            animation: rotateSlow 15s linear infinite;
+        }
+        
+        /* Image container styles */
         .image-wrapper {
-            width: 395px;
+            width: 100%;
+            max-width: 395px;
             height: 475px;
             position: relative;
             margin-bottom: 1.5rem;
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
+        
+        .image-wrapper:before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            padding: 2px;
+            background: linear-gradient(45deg, #9b87f5, transparent, #1EAEDB);
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
         .result-image {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
-
+        
         #annotationCanvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: 1;
         }
-
+        
+        /* Prediction box */
         .prediction-box {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 1rem 2rem;
-            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 395px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
-            width: 80%;
-            max-width: 400px;
+            transform: translateY(10px);
+            animation: fadeIn 1s ease 0.8s forwards;
         }
-
+        
         .prediction-text {
-            margin: 0;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 500;
+            margin-bottom: 0.5rem;
         }
-
+        
         .normal-text {
             color: #2ecc71;
         }
-
+        
         .pneumonia-text, .tuberculosis-text, .fracture-text {
             color: #e74c3c;
         }
-
+        
+        /* Chat box */
+        .chat-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        
         .chat-box {
             flex: 1;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
             overflow-y: auto;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(155, 135, 245, 0.5) rgba(0, 0, 0, 0.1);
         }
-
-        .chat-input {
-            display: flex;
-            gap: 1rem;
-            height: 80px;
+        
+        .chat-box::-webkit-scrollbar {
+            width: 6px;
         }
-
-        .chat-input input {
-            flex: 1;
-            padding: 0 1.5rem;
-            border: none;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            font-size: 1rem;
+        
+        .chat-box::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
         }
-
-        .chat-input input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+        
+        .chat-box::-webkit-scrollbar-thumb {
+            background: rgba(155, 135, 245, 0.5);
+            border-radius: 10px;
         }
-
-        .send-button {
-            padding: 0 2rem;
-            border: none;
-            border-radius: 15px;
-            background: #3498db;
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .send-button:hover {
-            background: #2980b9;
-        }
-
+        
         .message {
             margin-bottom: 1rem;
             padding: 1rem;
-            border-radius: 10px;
+            border-radius: 12px;
             max-width: 80%;
+            animation: fadeIn 0.3s ease;
+            position: relative;
+            backdrop-filter: blur(4px);
         }
-
+        
         .user-message {
-            background: rgba(52, 152, 219, 0.2);
+            background: rgba(155, 135, 245, 0.2);
             margin-left: auto;
+            border-top-right-radius: 2px;
+            border: 1px solid rgba(155, 135, 245, 0.3);
         }
-
+        
+        .user-message:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-left-color: rgba(155, 135, 245, 0.2);
+            border-right: 0;
+            border-top: 0;
+            margin-top: 0;
+        }
+        
         .bot-message {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(30, 174, 219, 0.2);
+            margin-right: auto;
+            border-top-left-radius: 2px;
+            border: 1px solid rgba(30, 174, 219, 0.3);
         }
-
+        
+        .bot-message:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-right-color: rgba(30, 174, 219, 0.2);
+            border-left: 0;
+            border-top: 0;
+            margin-top: 0;
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-input input:focus {
+            outline: none;
+            border-color: rgba(155, 135, 245, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 15px rgba(155, 135, 245, 0.3);
+        }
+        
+        .chat-input input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .send-button {
+            padding: 0 1.5rem;
+            background: #9b87f5;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .send-button:hover {
+            background: #8064f0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 135, 245, 0.4);
+        }
+        
+        .send-button:active {
+            transform: translateY(0);
+        }
+        
+        /* Analyze another image button */
         .analyze-button {
             display: block;
-            width: 100%;
-            padding: 1rem;
-            margin-bottom: 2.5rem;
-            background: #3498db;
+            width: 300px;
+            padding: 1rem 0;
+            background: #9b87f5;
             color: white;
             text-align: center;
             text-decoration: none;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            transition: background-color 0.3s;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 2rem auto 3rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            box-shadow: 0 8px 16px rgba(155, 135, 245, 0.3);
+            opacity: 0;
+            animation: slideUp 1s ease 0.9s forwards;
         }
-
+        
+        .analyze-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+        
+        .analyze-button:hover:before {
+            left: 100%;
+        }
+        
         .analyze-button:hover {
-            background: #2980b9;
+            background: #8064f0;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(155, 135, 245, 0.4);
         }
-
-        .question-categories {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+        
+        /* Questions section */
+        .questions-container {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
             padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 1s ease 0.8s forwards;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
         }
-
+        
+        .questions-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+            background: linear-gradient(to right, #ffffff, #9b87f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        .questions-subtitle {
+            text-align: center;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+        
         .category {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
         }
-
+        
+        .category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .category h3 {
+            font-size: 1.4rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: #9b87f5;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(155, 135, 245, 0.3);
+        }
+        
         .question-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1rem;
         }
-
+        
         .question-button {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 1rem;
-            color: #ffffff;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            border-radius: 12px;
             text-align: left;
-            font-size: 1rem;
+            color: white;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-
+        
         .question-button:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(155, 135, 245, 0.2);
+            border-color: rgba(155, 135, 245, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-
+        
+        /* Loader for chat */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(30, 174, 219, 0.1);
+            border-radius: 12px;
+            max-width: 80px;
+            margin-right: auto;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typingAnimation 1.5s infinite ease-in-out;
+            display: inline-block;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        /* Decorative elements */
+        .decorative-circle {
+            position: fixed;
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(70px);
+        }
+        
+        .circle-1 {
+            width: 500px;
+            height: 500px;
+            top: -200px;
+            left: -200px;
+            background: rgba(155, 135, 245, 0.15);
+        }
+        
+        .circle-2 {
+            width: 400px;
+            height: 400px;
+            bottom: -150px;
+            right: -150px;
+            background: rgba(30, 174, 219, 0.15);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes rotateSlow {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes typingAnimation {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.6;
+            }
+            30% {
+                transform: translateY(-4px);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes scan {
+            0% {
+                top: 0;
+                box-shadow: 0 0 0 rgba(155, 135, 245, 0.1);
+            }
+            50% {
+                box-shadow: 0 8px 15px rgba(155, 135, 245, 0.3);
+            }
+            100% {
+                top: calc(100% - 2px);
+                box-shadow: 0 0 0 rgba(155, 135, 245, 0.1);
+            }
+        }
+        
+        .scanner-line {
+            position: absolute;
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, #9b87f5, #1EAEDB, transparent);
+            top: 0;
+            animation: scan 2s linear infinite;
+            opacity: 1;
+            z-index: 10;
+        }
+        
+        /* Responsive styles */
         @media (max-width: 1024px) {
             .content-wrapper {
                 flex-direction: column;
+                align-items: center;
             }
-
+            
             .result-container, .chat-container {
                 width: 100%;
+                max-width: 600px;
                 height: auto;
-                min-height: 500px;
+                min-height: 600px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .question-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .image-wrapper {
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .results-container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .image-wrapper {
+                height: 300px;
+            }
+            
+            .prediction-text {
+                font-size: 1.1rem;
+            }
+            
+            .analyze-button {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>VitalScans.AI Results</h1>
+    <div class="decorative-circle circle-1"></div>
+    <div class="decorative-circle circle-2"></div>
+    
+    <div class="results-container">
+        <div class="results-header">
+            <h1>VitalScans<span style="color: #9b87f5;">.AI</span> Results</h1>
+            <p class="results-subtitle">AI-powered analysis of your {{ selected_model }} scan</p>
+        </div>
+        
         <div class="content-wrapper">
             <div class="result-container">
+                <div class="card-glow"></div>
+                <div class="scanner-line"></div>
+                
                 <h2>Annotated Image</h2>
                 <div class="image-wrapper">
                     <img src="{{ result_image }}" alt="Annotated Image" class="result-image" id="annotatedImage">
                     <canvas id="annotationCanvas"></canvas>
                 </div>
+                
                 <div class="prediction-box">
                     <p class="prediction-text">
                         Prediction: <span id="predictionText" class="{{ 'normal-text' if predictions[0]['class'] == 'Normal' else (selected_model + '-text') }}">
                             {{ predictions[0]['class'] }}
                         </span>
-                        (Confidence: {{ (predictions[0]['confidence'] * 100)|round(2) }}%)
                     </p>
+                    <p>Confidence: {{ (predictions[0]['confidence'] * 100)|round(2) }}%</p>
                 </div>
             </div>
+            
             <div class="chat-container">
-                <h2>Medical Assistant Chat</h2>
+                <div class="card-glow"></div>
+                
+                <h2 class="chat-title">Medical Assistant Chat</h2>
                 <div class="chat-box" id="chat-box">
                     <div class="message bot-message">
                         Hello! I'm your medical assistant. I can provide information about your {{ selected_model }} scan results and answer related questions. How can I help you today?
                     </div>
                 </div>
+                
                 <form id="chat-form" class="chat-input">
                     <input type="text" id="user-input" placeholder="Type your question..." required>
                     <input type="hidden" id="selected-model" value="{{ selected_model }}">
@@ -270,33 +695,12 @@
                 </form>
             </div>
         </div>
-        <a href="/" class="analyze-button">Analyze Another Image</a>
-        <style>
-            /* ... (previous styles remain unchanged) ... */
         
-            .analyze-button {
-                display: block;
-                width: calc(50% - 1.25rem); /* Adjust width to match content wrapper */
-                padding: 1rem;
-                margin: 0 auto 2.5rem;
-                background: #3498db;
-                color: white;
-                text-align: center;
-                text-decoration: none;
-                border-radius: 10px;
-                font-size: 1.2rem;
-                transition: background-color 0.3s;
-            }
+        <a href="/" class="analyze-button">Analyze Another Scan</a>
         
-            .analyze-button:hover {
-                background: #2980b9;
-            }
-        
-            /* ... (rest of the styles remain unchanged) ... */
-        </style>
-        <div class="question-categories">
-            <h2>Ask our Medical Assistant</h2>
-            <p>Click on a question to ask:</p>
+        <div class="questions-container">
+            <h2 class="questions-title">Suggested Questions</h2>
+            <p class="questions-subtitle">Click on any question to ask our medical assistant</p>
             
             <div id="pneumonia-questions" style="display: {{ 'block' if selected_model == 'pneumonia' else 'none' }};">
                 <div class="category">
@@ -331,63 +735,8 @@
                         <button class="question-button">Are there long-term effects of pneumonia?</button>
                     </div>
                 </div>
-                
-                <div class="category">
-                    <h3>Other Lung Diseases</h3>
-                    <div class="question-list">
-                        <button class="question-button">What are common lung diseases besides pneumonia?</button>
-                        <button class="question-button">What is tuberculosis (TB), and how is it different from pneumonia?</button>
-                        <button class="question-button">What is COPD, and who is at risk?</button>
-                        <button class="question-button">What are the early symptoms of lung cancer?</button>
-                        <button class="question-button">How can I tell the difference between a common cold, bronchitis, and pneumonia?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>When to Seek Help</h3>
-                    <div class="question-list">
-                        <button class="question-button">When should I see a doctor if I suspect pneumonia?</button>
-                        <button class="question-button">What does shortness of breath indicate?</button>
-                        <button class="question-button">How can I tell if a cough is serious?</button>
-                        <button class="question-button">What are the warning signs of a lung infection?</button>
-                        <button class="question-button">What should I do if a child or elderly person shows symptoms of pneumonia?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>General Lung Health</h3>
-                    <div class="question-list">
-                        <button class="question-button">How can I improve my lung health?</button>
-                        <button class="question-button">Does air pollution affect the lungs?</button>
-                        <button class="question-button">What exercises are good for improving lung capacity?</button>
-                        <button class="question-button">Does smoking always lead to lung disease?</button>
-                        <button class="question-button">How can I protect my lungs during a flu season or pandemic?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>FAQs Related to Scans and Imaging</h3>
-                    <div class="question-list">
-                        <button class="question-button">What does a lung X-ray show?</button>
-                        <button class="question-button">How accurate are scans for detecting lung diseases?</button>
-                        <button class="question-button">What is the difference between an X-ray, CT scan, and MRI for lung diagnosis?</button>
-                        <button class="question-button">Can lung scans detect issues before symptoms appear?</button>
-                        <button class="question-button">Do I need a doctor's referral for a lung scan?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>Common Myths and Misconceptions</h3>
-                    <div class="question-list">
-                        <button class="question-button">Is pneumonia just a bad cold?</button>
-                        <button class="question-button">Can young and healthy people get lung diseases?</button>
-                        <button class="question-button">Does pneumonia only occur in cold weather?</button>
-                        <button class="question-button">Do antibiotics cure all types of pneumonia?</button>
-                        <button class="question-button">Is pneumonia always serious?</button>
-                    </div>
-                </div>
             </div>
-
+            
             <div id="tuberculosis-questions" style="display: {{ 'block' if selected_model == 'tuberculosis' else 'none' }};">
                 <div class="category">
                     <h3>Understanding Tuberculosis</h3>
@@ -401,275 +750,207 @@
                 </div>
                 
                 <div class="category">
-                    <h3>Prevention and Risk Factors</h3>
-                    <div class="question-list">
-                        <button class="question-button">How can I prevent tuberculosis?</button>
-                        <button class="question-button">Who is at higher risk of developing tuberculosis?</button>
-                        <button class="question-button">Are there vaccines for tuberculosis?</button>
-                        <button class="question-button">Can tuberculosis occur more than once?</button>
-                        <button class="question-button">What lifestyle changes can reduce the risk of tuberculosis?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
                     <h3>Treatment and Recovery</h3>
                     <div class="question-list">
                         <button class="question-button">How is tuberculosis treated?</button>
-                        <button class="question-button">How long does it take to recover from tuberculosis?</button>
-                        <button class="question-button">Can tuberculosis be treated at home?</button>
-                        <button class="question-button">What should I eat or avoid while recovering from tuberculosis?</button>
-                        <button class="question-button">Are there long-term effects of tuberculosis?</button>
+                        <button class="question-button">How long does tuberculosis treatment last?</button>
+                        <button class="question-button">What medications are used to treat TB?</button>
+                        <button class="question-button">Can TB be cured completely?</button>
+                        <button class="question-button">What are the side effects of TB treatment?</button>
                     </div>
                 </div>
                 
                 <div class="category">
-                    <h3>Other Lung Diseases</h3>
+                    <h3>Prevention and Public Health</h3>
                     <div class="question-list">
-                        <button class="question-button">What are common lung diseases besides tuberculosis?</button>
-                        <button class="question-button">What is the difference between tuberculosis and pneumonia?</button>
-                        <button class="question-button">What is COPD, and who is at risk?</button>
-                        <button class="question-button">What are the early symptoms of lung cancer?</button>
-                        <button class="question-button">How can I tell the difference between a common cold, bronchitis, and tuberculosis?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>When to Seek Help</h3>
-                    <div class="question-list">
-                        <button class="question-button">When should I see a doctor if I suspect tuberculosis?</button>
-                        <button class="question-button">What does persistent coughing indicate?</button>
-                        <button class="question-button">How can I tell if a cough is serious?</button>
-                        <button class="question-button">What are the warning signs of a tuberculosis infection?</button>
-                        <button class="question-button">What should I do if a child or elderly person shows symptoms of tuberculosis?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>General Lung Health</h3>
-                    <div class="question-list">
-                        <button class="question-button">How can I improve my lung health?</button>
-                        <button class="question-button">Does air pollution affect the lungs?</button>
-                        <button class="question-button">What exercises are good for improving lung capacity?</button>
-                        <button class="question-button">Does smoking increase the risk of tuberculosis?</button>
-                        <button class="question-button">How can I protect my lungs during a flu season or pandemic?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>FAQs Related to Scans and Imaging</h3>
-                    <div class="question-list">
-                        <button class="question-button">What does a chest X-ray show for tuberculosis?</button>
-                        <button class="question-button">How accurate are scans for detecting tuberculosis?</button>
-                        <button class="question-button">What is the difference between an X-ray, CT scan, and MRI for tuberculosis diagnosis?</button>
-                        <button class="question-button">Can scans detect tuberculosis before symptoms appear?</button>
-                        <button class="question-button">Do I need a doctor's referral for a tuberculosis scan?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>Common Myths and Misconceptions</h3>
-                    <div class="question-list">
-                        <button class="question-button">Is tuberculosis just a severe cough?</button>
-                        <button class="question-button">Can young and healthy people get tuberculosis?</button>
-                        <button class="question-button">Does tuberculosis only occur in underdeveloped regions?</button>
-                        <button class="question-button">Do antibiotics cure all types of tuberculosis?</button>
-                        <button class="question-button">Is tuberculosis always life-threatening?</button>
+                        <button class="question-button">How can TB be prevented?</button>
+                        <button class="question-button">What is latent TB infection?</button>
+                        <button class="question-button">What is the BCG vaccine?</button>
+                        <button class="question-button">How is TB controlled in communities?</button>
+                        <button class="question-button">Who should be tested for TB?</button>
                     </div>
                 </div>
             </div>
-
+            
             <div id="fracture-questions" style="display: {{ 'block' if selected_model == 'fracture' else 'none' }};">
                 <div class="category">
-                    <h3>Understanding Broken Bones and Fractures</h3>
+                    <h3>Understanding Fractures</h3>
                     <div class="question-list">
-                        <button class="question-button">What are broken bones and fractures?</button>
-                        <button class="question-button">What are the common symptoms of a fracture?</button>
-                        <button class="question-button">What causes bones to break?</button>
-                        <button class="question-button">How are fractures classified (e.g., simple, compound)?</button>
-                        <button class="question-button">How is a broken bone diagnosed?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>Prevention and Risk Factors</h3>
-                    <div class="question-list">
-                        <button class="question-button">How can I prevent broken bones and fractures?</button>
-                        <button class="question-button">Who is at higher risk of bone fractures?</button>
-                        <button class="question-button">Does bone density affect fracture risk?</button>
-                        <button class="question-button">Can diet or lifestyle impact bone strength?</button>
-                        <button class="question-button">Are children or elderly people more prone to fractures?</button>
+                        <button class="question-button">What is a bone fracture?</button>
+                        <button class="question-button">What are the different types of fractures?</button>
+                        <button class="question-button">How does a fracture heal?</button>
+                        <button class="question-button">What's the difference between a fracture and a break?</button>
+                        <button class="question-button">How are fractures diagnosed?</button>
                     </div>
                 </div>
                 
                 <div class="category">
                     <h3>Treatment and Recovery</h3>
                     <div class="question-list">
-                        <button class="question-button">How are broken bones treated?</button>
-                        <button class="question-button">How long does it take to recover from a fracture?</button>
-                        <button class="question-button">What are the different types of casts and splints used for fractures?</button>
-                        <button class="question-button">Do all fractures require surgery?</button>
-                        <button class="question-button">What exercises or therapies help in recovering from a fracture?</button>
+                        <button class="question-button">How are fractures treated?</button>
+                        <button class="question-button">How long does it take for a fracture to heal?</button>
+                        <button class="question-button">What is the purpose of a cast or splint?</button>
+                        <button class="question-button">When is surgery needed for a fracture?</button>
+                        <button class="question-button">What can I do to help my fracture heal faster?</button>
                     </div>
                 </div>
                 
                 <div class="category">
-                    <h3>Bone Health and Conditions</h3>
+                    <h3>Long-term Care and Prevention</h3>
                     <div class="question-list">
-                        <button class="question-button">What is osteoporosis, and how does it relate to fractures?</button>
-                        <button class="question-button">What is a stress fracture, and how is it different from other fractures?</button>
-                        <button class="question-button">How does arthritis impact bone health?</button>
-                        <button class="question-button">What are common bone diseases besides fractures?</button>
-                        <button class="question-button">How can I tell the difference between a sprain, strain, and fracture?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>When to Seek Help</h3>
-                    <div class="question-list">
-                        <button class="question-button">When should I see a doctor if I suspect a broken bone?</button>
-                        <button class="question-button">What are the warning signs of a severe fracture?</button>
-                        <button class="question-button">How can I recognize if a fracture is healing poorly?</button>
-                        <button class="question-button">What should I do if a child or elderly person has a broken bone?</button>
-                        <button class="question-button">What are signs of infection in a fracture site?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>General Bone Health</h3>
-                    <div class="question-list">
-                        <button class="question-button">How can I improve my bone health?</button>
-                        <button class="question-button">Does calcium intake affect bone strength?</button>
-                        <button class="question-button">What exercises are good for maintaining healthy bones?</button>
-                        <button class="question-button">How does vitamin D help in bone health?</button>
-                        <button class="question-button">Can smoking or alcohol affect bone strength?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>FAQs Related to Scans and Imaging</h3>
-                    <div class="question-list">
-                        <button class="question-button">What does an X-ray show for a broken bone?</button>
-                        <button class="question-button">How accurate are bone scans for detecting fractures?</button>
-                        <button class="question-button">What is the difference between an X-ray, CT scan, and MRI for bone injuries?</button>
-                        <button class="question-button">Can scans detect hairline or stress fractures?</button>
-                        <button class="question-button">Do I need a doctor's referral for a bone scan?</button>
-                    </div>
-                </div>
-                
-                <div class="category">
-                    <h3>Common Myths and Misconceptions</h3>
-                    <div class="question-list">
-                        <button class="question-button">Are broken bones always painful?</button>
-                        <button class="question-button">Can bones heal without medical treatment?</button>
-                        <button class="question-button">Do fractures only happen from severe accidents?</button>
-                        <button class="question-button">Is a bone weaker after it heals from a fracture?</button>
-                        <button class="question-button">Are all fractures visible on X-rays?</button>
+                        <button class="question-button">Are there long-term effects after a fracture heals?</button>
+                        <button class="question-button">How can I prevent fractures?</button>
+                        <button class="question-button">What exercises are safe with a healing fracture?</button>
+                        <button class="question-button">How can I strengthen my bones?</button>
+                        <button class="question-button">When can I return to normal activities after a fracture?</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Force image reload to prevent caching
             $('#annotatedImage').attr('src', '{{ result_image }}?' + new Date().getTime());
+            
             const prediction = "{{ predictions[0]['class'] }}";
             const confidence = "{{ (predictions[0]['confidence'] * 100)|round(2) }}";
             const selectedModel = "{{ selected_model }}";
-
-            function resizeImage(img, targetWidth, targetHeight) {
-                const canvas = document.createElement('canvas');
-                canvas.width = targetWidth;
-                canvas.height = targetHeight;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-                return canvas.toDataURL();
-            }
-
+            
             function drawAnnotation() {
                 const image = document.getElementById('annotatedImage');
                 const canvas = document.getElementById('annotationCanvas');
                 const ctx = canvas.getContext('2d');
-
-                // Set canvas size to match the image wrapper
-                canvas.width = 395;
-                canvas.height = 475;
-
+                
+                // Set canvas dimensions to match the image container
+                const container = document.querySelector('.image-wrapper');
+                canvas.width = container.offsetWidth;
+                canvas.height = container.offsetHeight;
+                
                 // Clear previous annotations
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                // Resize the image
-                const resizedImageSrc = resizeImage(image, 395, 475);
-                const resizedImage = new Image();
-                resizedImage.onload = function() {
-                    // Clear the canvas again before drawing the new image and annotation
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                    // Draw the resized image on the canvas
-                    ctx.drawImage(resizedImage, 0, 0, 395, 475);
-
-                    // Draw bounding box and label for the first prediction only
-                    const pred = {{ predictions[0]|tojson }};
-                    const boxWidth = pred.width * 395;
-                    const boxHeight = pred.height * 475;
-                    const boxX = (pred.x - pred.width / 2) * 395;
-                    const boxY = (pred.y - pred.height / 2) * 475;
-
+                
+                // Get the actual dimensions of the displayed image
+                const imgWidth = image.width;
+                const imgHeight = image.height;
+                
+                // Calculate dimensions for the image within the canvas
+                const imgRatio = imgWidth / imgHeight;
+                const canvasRatio = canvas.width / canvas.height;
+                
+                let renderWidth, renderHeight, offsetX, offsetY;
+                
+                if (imgRatio > canvasRatio) {
+                    // Image is wider than canvas (relative to height)
+                    renderWidth = canvas.width;
+                    renderHeight = renderWidth / imgRatio;
+                    offsetX = 0;
+                    offsetY = (canvas.height - renderHeight) / 2;
+                } else {
+                    // Image is taller than canvas (relative to width)
+                    renderHeight = canvas.height;
+                    renderWidth = renderHeight * imgRatio;
+                    offsetX = (canvas.width - renderWidth) / 2;
+                    offsetY = 0;
+                }
+                
+                // Draw annotations for each prediction
+                const predictions = {{ predictions|tojson }};
+                predictions.forEach(function(pred) {
+                    const boxWidth = pred.width * renderWidth;
+                    const boxHeight = pred.height * renderHeight;
+                    const boxX = offsetX + (pred.x - pred.width / 2) * renderWidth;
+                    const boxY = offsetY + (pred.y - pred.height / 2) * renderHeight;
+                    
+                    // Draw bounding box
                     ctx.strokeStyle = pred.class === 'Normal' ? '#2ecc71' : '#e74c3c';
                     ctx.lineWidth = 3;
                     ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
-
+                    
                     // Add label background
                     const labelText = `${pred.class}: ${(pred.confidence * 100).toFixed(2)}%`;
-                    ctx.font = 'bold 16px Arial';
+                    ctx.font = 'bold 16px Inter, sans-serif';
                     const textWidth = ctx.measureText(labelText).width;
                     
                     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
                     ctx.fillRect(boxX, boxY - 30, textWidth + 20, 30);
-
+                    
                     // Add label text
                     ctx.fillStyle = '#ffffff';
                     ctx.fillText(labelText, boxX + 10, boxY - 10);
-                };
-                resizedImage.src = resizedImageSrc;
+                });
             }
-
+            
             // Draw annotation when image is loaded
-            $('#annotatedImage').on('load', drawAnnotation);
-
+            $('#annotatedImage').on('load', function() {
+                setTimeout(drawAnnotation, 100); // Small delay to ensure image dimensions are set
+            });
+            
+            // Redraw annotations if window is resized
+            $(window).on('resize', function() {
+                drawAnnotation();
+            });
+            
+            // Handle chat form submission
             $('#chat-form').on('submit', function(e) {
                 e.preventDefault();
                 const userInput = $('#user-input').val();
                 if (!userInput.trim()) return;
                 
+                // Add user message to chat
                 $('#chat-box').append('<div class="message user-message">' + userInput + '</div>');
                 $('#user-input').val('');
                 $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
-
+                
+                // Add typing indicator
+                $('#chat-box').append('<div class="typing-indicator" id="typing-indicator">' +
+                    '<span class="typing-dot"></span>' +
+                    '<span class="typing-dot"></span>' +
+                    '<span class="typing-dot"></span>' +
+                '</div>');
+                $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+                
+                // Send request to backend
                 $.post('/ask_chatgpt', { 
                     question: userInput,
                     prediction: prediction,
                     confidence: confidence,
                     selected_model: selectedModel
                 })
-                    .done(function(response) {
-                        $('#chat-box').append('<div class="message bot-message">' + response.answer + '</div>');
-                        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
-                    })
-                    .fail(function(jqXHR, textStatus, errorThrown) {
-                        console.error("Error:", textStatus, errorThrown);
-                        $('#chat-box').append('<div class="message bot-message">Failed to get response from ChatGPT. Please try again.</div>');
-                        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
-                    });
+                .done(function(response) {
+                    // Remove typing indicator
+                    $('#typing-indicator').remove();
+                    
+                    // Add bot response
+                    $('#chat-box').append('<div class="message bot-message">' + response.answer + '</div>');
+                    $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+                })
+                .fail(function() {
+                    // Remove typing indicator
+                    $('#typing-indicator').remove();
+                    
+                    // Add error message
+                    $('#chat-box').append('<div class="message bot-message">Sorry, I encountered an error. Please try again later.</div>');
+                    $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+                });
             });
-
+            
+            // Handle predefined question clicks
             $('.question-button').on('click', function() {
                 const question = $(this).text();
                 $('#user-input').val(question);
                 $('#chat-form').submit();
-                $('html, body').animate({ scrollTop: 0 }, 'slow');
+                
+                // Smooth scroll to chat container
+                $('html, body').animate({
+                    scrollTop: $(".chat-container").offset().top - 20
+                }, 500);
             });
+            
+            // Try to draw annotations immediately in case image is already loaded
+            setTimeout(drawAnnotation, 500);
         });
     </script>
 </body>

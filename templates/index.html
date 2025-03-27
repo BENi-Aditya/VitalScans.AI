@@ -1,221 +1,1058 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VitalScans.AI</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VitalScans.AI - Medical Image Analysis</title>
+    <meta name="description" content="AI-powered diagnostic tool that analyzes X-ray images to detect conditions like pneumonia, tuberculosis, and fractures." />
+    <meta name="author" content="VitalScans.AI" />
+
+    <meta property="og:title" content="VitalScans.AI - Medical Image Analysis" />
+    <meta property="og:description" content="AI-powered diagnostic tool for medical imaging analysis" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: #ffffff;
-            height: 100vh;
-            background: linear-gradient(135deg, #1a2a4a 0%, #0a1128 100%) fixed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px; /* Increased base font size for larger overall appearance */
+      /* Base and Reset Styles */
+      *, *::before, *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body, html {
+        height: 100%;
+        width: 100%;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #ffffff;
+        background: linear-gradient(135deg, #1A1F2C 0%, #0a1128 100%) fixed;
+        overflow-x: hidden;
+      }
+      
+      /* Typography */
+      h1, h2, h3, h4, h5, h6 {
+        margin: 0;
+        line-height: 1.2;
+      }
+      
+      h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(to right, #ffffff, #9b87f5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+      }
+      
+      p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        opacity: 0.85;
+      }
+      
+      /* Layout */
+      .page-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        position: relative;
+        z-index: 1;
+      }
+      
+      .container {
+        width: 100%;
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+      }
+      
+      .brand-logo {
+        margin-bottom: 1.5rem;
+        opacity: 0;
+        animation: fadeIn 1s ease forwards;
+      }
+      
+      .app-title {
+        opacity: 0;
+        animation: fadeIn 1s ease 0.2s forwards;
+      }
+      
+      .app-description {
+        opacity: 0;
+        animation: fadeIn 1s ease 0.4s forwards;
+      }
+      
+      /* Card styles */
+      .upload-card {
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(12px);
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 2rem;
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slideUp 1s ease 0.6s forwards;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .card-glow {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(155, 135, 245, 0.15) 0%, rgba(155, 135, 245, 0) 70%);
+        pointer-events: none;
+        z-index: -1;
+        animation: rotateSlow 15s linear infinite;
+      }
+      
+      /* Form Elements */
+      .model-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+        flex-wrap: wrap;
+      }
+      
+      .model-button {
+        flex: 1;
+        min-width: 120px;
+        padding: 1rem 1.2rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+        border: none;
+        border-radius: 12px;
+        background-color: rgba(155, 135, 245, 0.3);
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .model-button:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: 0.5s;
+      }
+      
+      .model-button:hover:before {
+        left: 100%;
+      }
+      
+      .model-button:hover {
+        background-color: rgba(155, 135, 245, 0.5);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(155, 135, 245, 0.3);
+      }
+      
+      .model-button.selected {
+        background-color: #9b87f5;
+        box-shadow: 0 7px 25px rgba(155, 135, 245, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      
+      .file-input {
+        display: none;
+      }
+      
+      .button-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-width: 350px;
+        margin: 0 auto;
+      }
+      
+      .file-label, .submit-button {
+        display: inline-block;
+        width: 100%;
+        padding: 1rem 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background-color: #9b87f5;
+        color: white;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .file-label:before, .submit-button:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: 0.5s;
+      }
+      
+      .file-label:hover:before, .submit-button:hover:before {
+        left: 100%;
+      }
+      
+      .file-label:hover, .submit-button:hover {
+        background-color: #8064f0;
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(155, 135, 245, 0.4);
+      }
+      
+      .submit-button:disabled {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: none;
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+      
+      #file-name {
+        margin: 0.75rem 0;
+        font-style: italic;
+        min-height: 1.5em;
+        font-size: 0.9rem;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+      }
+      
+      .preview-container {
+        width: 280px;
+        height: 280px;
+        margin: 1.5rem auto;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: none;
+        background: rgba(0, 0, 0, 0.2);
+        position: relative;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      .preview-container:before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        padding: 2px;
+        background: linear-gradient(45deg, #9b87f5, transparent, #1EAEDB);
+        -webkit-mask: 
+          linear-gradient(#fff 0 0) content-box, 
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+      
+      #preview-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+      
+      .preview-container.visible #preview-image {
+        opacity: 1;
+      }
+      
+      .scanner-line {
+        position: absolute;
+        height: 2px;
+        width: 100%;
+        background: linear-gradient(90deg, transparent, #9b87f5, #1EAEDB, transparent);
+        top: 0;
+        animation: scan 2s linear infinite;
+        opacity: 0;
+        z-index: 10;
+      }
+      
+      .preview-container.scanning .scanner-line {
+        opacity: 1;
+      }
+      
+      .parkinsons-button {
+        display: inline-block;
+        width: 100%;
+        padding: 1rem 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background-color: #ea384c;
+        color: white;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        margin-top: 1.5rem;
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slideUp 1s ease 0.8s forwards;
+        box-shadow: 0 8px 16px rgba(234, 56, 76, 0.3);
+      }
+      
+      .parkinsons-button:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: 0.5s;
+      }
+      
+      .parkinsons-button:hover:before {
+        left: 100%;
+      }
+      
+      .parkinsons-button:hover {
+        background-color: #d42a3d;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(234, 56, 76, 0.4);
+      }
+      
+      .drop-zone {
+        border: 2px dashed rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        margin: 1rem 0;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      
+      .drop-zone.drag-over {
+        border-color: #9b87f5;
+        background: rgba(155, 135, 245, 0.1);
+      }
+      
+      .drop-zone-text {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 0.5rem;
+      }
+      
+      .icon-upload {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 1rem;
+        opacity: 0.7;
+      }
+      
+      /* Results Page Styles */
+      .results-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      
+      .results-header {
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+      
+      .results-content {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: center;
+      }
+      
+      .result-image-container {
+        flex: 1;
+        min-width: 300px;
+        max-width: 550px;
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(12px);
+        border-radius: 24px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slideUp 1s ease 0.4s forwards;
+      }
+      
+      .chat-container {
+        flex: 1;
+        min-width: 300px;
+        max-width: 550px;
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(12px);
+        border-radius: 24px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slideUp 1s ease 0.6s forwards;
+        height: 700px;
+      }
+      
+      .image-wrapper {
+        width: 100%;
+        height: 400px;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 1.5rem;
+        position: relative;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      }
+      
+      .image-wrapper:before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        padding: 2px;
+        background: linear-gradient(45deg, #9b87f5, transparent, #1EAEDB);
+        -webkit-mask: 
+          linear-gradient(#fff 0 0) content-box, 
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        z-index: 2;
+      }
+      
+      .result-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: rgba(0, 0, 0, 0.2);
+      }
+      
+      #annotationCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+      
+      .prediction-result {
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(8px);
+        border-radius: 16px;
+        padding: 1.5rem;
+        width: 100%;
+        margin-bottom: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .prediction-text {
+        font-size: 1.3rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+      
+      .prediction-confidence {
+        font-size: 1.1rem;
+        opacity: 0.8;
+      }
+      
+      .chat-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #fff;
+      }
+      
+      .chat-box {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 16px;
+        margin-bottom: 1rem;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(155, 135, 245, 0.5) rgba(0, 0, 0, 0.1);
+      }
+      
+      .chat-box::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      .chat-box::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+      }
+      
+      .chat-box::-webkit-scrollbar-thumb {
+        background: rgba(155, 135, 245, 0.5);
+        border-radius: 10px;
+      }
+      
+      .message {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 12px;
+        max-width: 80%;
+        animation: fadeIn 0.3s ease;
+        position: relative;
+        backdrop-filter: blur(4px);
+      }
+      
+      .user-message {
+        background: rgba(155, 135, 245, 0.2);
+        margin-left: auto;
+        border-top-right-radius: 2px;
+        border: 1px solid rgba(155, 135, 245, 0.3);
+      }
+      
+      .user-message:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -10px;
+        width: 0;
+        height: 0;
+        border: 10px solid transparent;
+        border-left-color: rgba(155, 135, 245, 0.2);
+        border-right: 0;
+        border-top: 0;
+        margin-top: 0;
+      }
+      
+      .bot-message {
+        background: rgba(30, 174, 219, 0.2);
+        margin-right: auto;
+        border-top-left-radius: 2px;
+        border: 1px solid rgba(30, 174, 219, 0.3);
+      }
+      
+      .bot-message:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -10px;
+        width: 0;
+        height: 0;
+        border: 10px solid transparent;
+        border-right-color: rgba(30, 174, 219, 0.2);
+        border-left: 0;
+        border-top: 0;
+        margin-top: 0;
+      }
+      
+      .chat-input {
+        display: flex;
+        gap: 0.5rem;
+      }
+      
+      .chat-input input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+      
+      .chat-input input:focus {
+        outline: none;
+        border-color: rgba(155, 135, 245, 0.5);
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 15px rgba(155, 135, 245, 0.3);
+      }
+      
+      .chat-input input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      
+      .send-button {
+        padding: 0 1.5rem;
+        background: #9b87f5;
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      .send-button:hover {
+        background: #8064f0;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(155, 135, 245, 0.4);
+      }
+      
+      .send-button:active {
+        transform: translateY(0);
+      }
+      
+      .questions-container {
+        margin-top: 2rem;
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(12px);
+        border-radius: 24px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        max-width: 1200px;
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slideUp 1s ease 0.8s forwards;
+      }
+      
+      .questions-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      
+      .questions-subtitle {
+        text-align: center;
+        opacity: 0.8;
+        margin-bottom: 2rem;
+      }
+      
+      .question-category {
+        margin-bottom: 2rem;
+      }
+      
+      .category-title {
+        font-size: 1.4rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        color: #9b87f5;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(155, 135, 245, 0.3);
+      }
+      
+      .question-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+      }
+      
+      .question-button {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        border-radius: 12px;
+        text-align: left;
+        color: white;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .question-button:hover {
+        background: rgba(155, 135, 245, 0.2);
+        border-color: rgba(155, 135, 245, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      
+      .back-button {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      .back-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* Decorative elements */
+      .decorative-circle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(155, 135, 245, 0.15);
+        z-index: -1;
+        filter: blur(50px);
+      }
+      
+      .circle-1 {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        left: -150px;
+      }
+      
+      .circle-2 {
+        width: 250px;
+        height: 250px;
+        bottom: -50px;
+        right: -100px;
+        background: rgba(30, 174, 219, 0.15);
+      }
+      
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
         }
-
-        .container {
-            width: 100%;
-            max-width: 600px; /* Increased from 500px for a larger container */
-            margin: 0 auto;
-            padding: 3rem; /* Increased padding for more space */
-            text-align: center;
+        to {
+          opacity: 1;
         }
-
+      }
+      
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      @keyframes scan {
+        0% {
+          top: 0;
+          box-shadow: 0 0 0 rgba(155, 135, 245, 0.1);
+        }
+        50% {
+          box-shadow: 0 8px 15px rgba(155, 135, 245, 0.3);
+        }
+        100% {
+          top: calc(100% - 2px);
+          box-shadow: 0 0 0 rgba(155, 135, 245, 0.1);
+        }
+      }
+      
+      @keyframes rotateSlow {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+      
+      /* Responsive styles */
+      @media (max-width: 768px) {
         h1 {
-            font-size: 3.5rem; /* Increased from 2.5rem for a bigger title */
-            margin-bottom: 0.5rem;
-            font-weight: 600;
+          font-size: 2.5rem;
         }
-
-        p {
-            font-size: 1rem; /* Decreased from 1.1rem as requested */
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .upload-form {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2.5rem; /* Increased padding for more space */
-        }
-
+        
         .model-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 0.75rem; /* Increased gap for more space between buttons */
-            margin-bottom: 2rem; /* Increased margin for more space */
+          flex-direction: column;
         }
-
+        
         .model-button {
-            flex: 1;
-            padding: 0.9rem 1.2rem; /* Increased padding for larger buttons */
-            font-size: 1.1rem; /* Increased font size */
-            border: none;
-            border-radius: 10px;
-            background-color: #3498db;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
+          width: 100%;
         }
-
-        .model-button:hover {
-            background-color: #2980b9;
-            box-shadow: 0 0 20px rgba(52, 152, 219, 0.7); /* Increased glow effect */
+        
+        .upload-card {
+          padding: 1.5rem;
         }
-
-        .model-button.selected {
-            background-color: #2471a3; /* Different shade of blue for selected state */
-            box-shadow: 0 0 25px rgba(52, 152, 219, 1); /* Increased glow effect for selected state */
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .button-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem; /* Increased gap */
-            max-width: 350px; /* Increased from 300px */
-            margin: 0 auto;
-        }
-
-        .file-label, .submit-button {
-            display: inline-block;
-            width: 100%;
-            padding: 0.9rem 0; /* Increased padding */
-            font-size: 1.1rem; /* Increased font size */
-            background-color: #3498db;
-            color: white;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            border: none;
-        }
-
-        .file-label:hover, .submit-button:hover {
-            background-color: #2980b9;
-        }
-
-        .submit-button:disabled {
-            background-color: rgba(255, 255, 255, 0.1);
-            cursor: not-allowed;
-        }
-
-        #file-name {
-            margin: 0.75rem 0; /* Increased margin */
-            font-style: italic;
-            min-height: 1.5em;
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
+        
         .preview-container {
-            width: 250px; /* Increased from 200px */
-            height: 250px; /* Increased from 200px */
-            margin: 1.5rem auto; /* Increased margin */
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: none;
+          width: 220px;
+          height: 220px;
         }
-
-        #preview-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background: rgba(0, 0, 0, 0.2);
+        
+        .button-wrapper {
+          max-width: 100%;
         }
-        .parkinsons-button {
-            display: inline-block;
-            width: 100%;
-            padding: 0.9rem 0;
-            font-size: 1.1rem;
-            background-color: #e74c3c;
-            color: white;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            border: none;
-            margin-top: 1.5rem;
-            text-decoration: none;
+        
+        .results-content {
+          flex-direction: column;
+          align-items: center;
         }
-
-        .parkinsons-button:hover {
-            background-color: #c0392b;
+        
+        .result-image-container,
+        .chat-container {
+          max-width: 100%;
         }
+        
+        .image-wrapper {
+          height: 300px;
+        }
+        
+        .question-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        h1 {
+          font-size: 2rem;
+        }
+        
+        .container {
+          padding: 1rem;
+        }
+        
+        .upload-card {
+          padding: 1.25rem;
+        }
+        
+        .image-wrapper {
+          height: 250px;
+        }
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <h1>VitalScans.AI</h1>
-        <p>Upload X-ray image for analysis</p>
-        <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
+  </head>
+  <body>
+    <div class="page-container">
+      <div class="decorative-circle circle-1"></div>
+      <div class="decorative-circle circle-2"></div>
+      
+      <div class="container">
+        <div class="brand-logo">
+          <!-- You can replace this with your actual logo SVG or image -->
+          <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M30 12C28.3431 12 27 13.3431 27 15C27 16.6569 28.3431 18 30 18C31.6569 18 33 16.6569 33 15C33 13.3431 31.6569 12 30 12Z" fill="#9b87f5"/>
+            <path d="M30 27C28.3431 27 27 28.3431 27 30C27 31.6569 28.3431 33 30 33C31.6569 33 33 31.6569 33 30C33 28.3431 31.6569 27 30 27Z" fill="#9b87f5"/>
+            <path d="M30 42C28.3431 42 27 43.3431 27 45C27 46.6569 28.3431 48 30 48C31.6569 48 33 46.6569 33 45C33 43.3431 31.6569 42 30 42Z" fill="#9b87f5"/>
+            <path d="M15 27C13.3431 27 12 28.3431 12 30C12 31.6569 13.3431 33 15 33C16.6569 33 18 31.6569 18 30C18 28.3431 16.6569 27 15 27Z" fill="#1EAEDB"/>
+            <path d="M45 27C43.3431 27 42 28.3431 42 30C42 31.6569 43.3431 33 45 33C46.6569 33 48 31.6569 48 30C48 28.3431 46.6569 27 45 27Z" fill="#1EAEDB"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M30 60C46.5685 60 60 46.5685 60 30C60 13.4315 46.5685 0 30 0C13.4315 0 0 13.4315 0 30C0 46.5685 13.4315 60 30 60ZM30 55C43.8071 55 55 43.8071 55 30C55 16.1929 43.8071 5 30 5C16.1929 5 5 16.1929 5 30C5 43.8071 16.1929 55 30 55Z" fill="url(#paint0_linear)"/>
+            <defs>
+              <linearGradient id="paint0_linear" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#9b87f5"/>
+                <stop offset="1" stop-color="#1EAEDB"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        
+        <h1 class="app-title">VitalScans.AI</h1>
+        <p class="app-description">Upload X-ray image for AI-powered medical analysis</p>
+        
+        <div class="upload-card">
+          <div class="card-glow"></div>
+          <div class="scanner-line"></div>
+          
+          <form action="/upload" method="post" enctype="multipart/form-data" id="upload-form">
             <div class="model-buttons">
-                <button type="button" class="model-button" data-model="pneumonia">Pneumonia</button>
-                <button type="button" class="model-button" data-model="tuberculosis">Tuberculosis</button>
-                <button type="button" class="model-button" data-model="fracture">Fracture</button>
+              <button type="button" class="model-button" data-model="pneumonia">Pneumonia</button>
+              <button type="button" class="model-button" data-model="tuberculosis">Tuberculosis</button>
+              <button type="button" class="model-button" data-model="fracture">Fracture</button>
             </div>
+            
+            <div class="drop-zone" id="drop-zone">
+              <svg class="icon-upload" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <p class="drop-zone-text">Drag & drop your X-ray image here</p>
+              <p class="drop-zone-text">or</p>
+            </div>
+            
             <div id="file-name"></div>
-            <div class="preview-container">
-                <img id="preview-image" alt="Preview">
+            
+            <div class="preview-container" id="preview-container">
+              <img id="preview-image" alt="Preview">
             </div>
+            
             <div class="button-wrapper">
-                <input type="file" name="file" id="file-input" class="file-input" accept="image/*" required>
-                <label for="file-input" class="file-label">Choose File</label>
-                <input type="hidden" name="selected-model" id="selected-model" value="pneumonia">
-                <button type="submit" class="submit-button" disabled>Upload Scan</button>
+              <input type="file" name="file" id="file-input" class="file-input" accept="image/*" required>
+              <label for="file-input" class="file-label">Choose File</label>
+              <input type="hidden" name="selected-model" id="selected-model" value="pneumonia">
+              <button type="submit" class="submit-button" id="submit-button" disabled>Upload Scan</button>
             </div>
-        </form>
+          </form>
+        </div>
+        
         <a href="/parkinsons_test" class="parkinsons-button">Parkinson's Detection Test</a>
+      </div>
     </div>
 
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script type="module" src="/src/main.tsx"></script>
+    
     <script>
-        const fileInput = document.getElementById('file-input');
-        const fileName = document.getElementById('file-name');
-        const submitButton = document.querySelector('.submit-button');
-        const modelButtons = document.querySelectorAll('.model-button');
-        const selectedModelInput = document.getElementById('selected-model');
-        const previewContainer = document.querySelector('.preview-container');
-        const previewImage = document.getElementById('preview-image');
+      // File upload and preview functionality
+      const fileInput = document.getElementById('file-input');
+      const fileName = document.getElementById('file-name');
+      const submitButton = document.getElementById('submit-button');
+      const modelButtons = document.querySelectorAll('.model-button');
+      const selectedModelInput = document.getElementById('selected-model');
+      const previewContainer = document.getElementById('preview-container');
+      const previewImage = document.getElementById('preview-image');
+      const uploadForm = document.getElementById('upload-form');
+      const dropZone = document.getElementById('drop-zone');
+      
+      // Set default selected model
+      modelButtons[0].classList.add('selected');
 
-        fileInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const file = this.files[0];
-                fileName.textContent = file.name;
-                submitButton.disabled = false;
-                
-                // Show preview
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImage.src = e.target.result;
-                    previewContainer.style.display = 'block';
-                }
-                reader.readAsDataURL(file);
-            } else {
-                fileName.textContent = '';
-                submitButton.disabled = true;
-                previewContainer.style.display = 'none';
-            }
+      // Handle file selection
+      fileInput.addEventListener('change', function() {
+        handleFileUpload(this.files);
+      });
+      
+      // Function to handle the file upload
+      function handleFileUpload(files) {
+        if (files && files[0]) {
+          const file = files[0];
+          
+          // Show file name
+          fileName.textContent = file.name;
+          submitButton.disabled = false;
+          
+          // Create preview
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            previewImage.src = e.target.result;
+            previewContainer.style.display = 'block';
+            previewContainer.classList.add('scanning');
+            
+            // Wait a bit to simulate scanning, then show the image
+            setTimeout(() => {
+              previewContainer.classList.add('visible');
+              previewContainer.classList.remove('scanning');
+            }, 1500);
+          }
+          reader.readAsDataURL(file);
+        } else {
+          fileName.textContent = '';
+          submitButton.disabled = true;
+          previewContainer.style.display = 'none';
+          previewContainer.classList.remove('visible', 'scanning');
+        }
+      }
+      
+      // Handle model selection
+      modelButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          modelButtons.forEach(btn => btn.classList.remove('selected'));
+          this.classList.add('selected');
+          selectedModelInput.value = this.dataset.model;
         });
-
-        modelButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                modelButtons.forEach(btn => btn.classList.remove('selected'));
-                this.classList.add('selected');
-                selectedModelInput.value = this.dataset.model;
-            });
-        });
-
-        // Set default selected model
-        modelButtons[0].click();
+      });
+      
+      // Drag and drop functionality
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+      });
+      
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+      });
+      
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+      });
+      
+      function highlight() {
+        dropZone.classList.add('drag-over');
+      }
+      
+      function unhighlight() {
+        dropZone.classList.remove('drag-over');
+      }
+      
+      dropZone.addEventListener('drop', handleDrop, false);
+      
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+        handleFileUpload(files);
+      }
+      
+      // Handling form submission - adding a visual feedback
+      uploadForm.addEventListener('submit', function(e) {
+        if (!fileInput.files || !fileInput.files[0]) {
+          e.preventDefault();
+          return;
+        }
+        
+        // Add scanning effect
+        previewContainer.classList.add('scanning');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Processing...';
+        
+        // Normally the form would submit to your backend
+      });
     </script>
-</body>
+  </body>
 </html>

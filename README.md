@@ -46,7 +46,7 @@
 
 <br><br>
 
-<h2 style="color: #f39c12; text-align: center; margin-top: 20px;">🌟 Key Features</h2>
+<h2 style="color:rgb(255, 128, 0); text-align: center; margin-top: 20px;">🌟 Key Features</h2>
 
 <br>
 
