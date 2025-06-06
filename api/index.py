@@ -8,7 +8,12 @@ from inference_sdk import InferenceHTTPClient
 from datetime import datetime
 
 # Initialize Flask App
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates'),
+    static_folder=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
+)
+
 UPLOAD_FOLDER = 'static/uploads'
 RESULT_FOLDER = 'static/results'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
