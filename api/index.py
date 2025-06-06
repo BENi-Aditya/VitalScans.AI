@@ -6,8 +6,9 @@ from .chatbot import chatbot
 from .parkinsons_detection import get_random_pattern, analyze_tracing
 from inference_sdk import InferenceHTTPClient
 from datetime import datetime
+from openai import OpenAI
 
-# Initialize Flask App
+# Explicitly set template and static folder paths
 app = Flask(
     __name__,
     template_folder=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates'),
@@ -117,7 +118,11 @@ def ask_chatgpt():
       return jsonify({'answer': "Sorry, the chatbot is currently unavailable. Please try again later."})
   
   try:
-      response = chatbot.get_response(context, question)
+      client = OpenAI(api_key="YOUR_KEY")
+      response = client.chat.completions.create(
+          model="gpt-3.5-turbo",
+          messages=[...]
+      )
       return jsonify({'answer': response})
   except Exception as e:
       app.logger.error(f"Error in ask_chatgpt: {str(e)}")
