@@ -4,9 +4,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+print("ALL ENV VARS:", os.environ)
+
 class ChatBot:
     def __init__(self):
         self.api_key = os.getenv("OPENAI_API_KEY")
+        print("OPENAI_API_KEY in production:", self.api_key)
         if not self.api_key:
             raise ValueError("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
         self.model = "gpt-3.5-turbo"
@@ -28,6 +31,9 @@ class ChatBot:
             return response.choices[0].message.content.strip()
         except Exception as e:
             return f"Error: {str(e)}"
+
+def get_chatbot():
+    return ChatBot()
 
 # Create an instance of the ChatBot class
 try:
