@@ -118,15 +118,14 @@ def ask_chatgpt():
       return jsonify({'answer': "Sorry, the chatbot is currently unavailable. Please try again later."})
   
   try:
-      client = OpenAI(api_key="YOUR_KEY")
-      response = client.chat.completions.create(
-          model="gpt-3.5-turbo",
-          messages=[...]
-      )
+      response = chatbot.get_response(context, question)
       return jsonify({'answer': response})
   except Exception as e:
-      app.logger.error(f"Error in ask_chatgpt: {str(e)}")
-      return jsonify({'answer': "I'm sorry, but I encountered an error while processing your request. Please try again later."})
+      import traceback
+      tb = traceback.format_exc()
+      app.logger.error(f"Error in ask_chatgpt: {str(e)}\n{tb}")
+      # Return the error and traceback in the response for debugging
+      return jsonify({'answer': f"Error: {str(e)}\n{tb}"})
 
 @app.route('/parkinsons_test')
 def parkinsons_test():
